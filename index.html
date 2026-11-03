@@ -119,7 +119,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <button type="button" id="fUp" aria-pressed="true">Próximos</button>
       <button type="button" id="fAll" aria-pressed="false">Todos</button>
     </div>
-    <span class="hint" id="hint" hidden>Arrastra desde el número para cambiar el orden</span>
+    <span class="hint" id="hint">Arrastra desde ⋮⋮ para cambiar el orden</span>
   </div>
 
   <form class="panel" id="form" hidden>
@@ -162,18 +162,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
 
 <script>
 const KEY="recomendados.v1";
-const SEED=[
- {id:"ib0281-c1",tipo:"cuidar",vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Patricia Sofía Arradi Casas",asiento:"",deParte:"Cmte. Kiko Miragaya",nota:"Íntima amiga de Nacho Colla, comandante de Iberia.",atendido:false,creado:1},
- {id:"ib0281-c2",tipo:"cuidar",vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Lorena Suárez",asiento:"",deParte:"Cmte. Gabriel Ponce de León",nota:"Íntima amiga de su mujer. Va con reserva, en business.",atendido:false,creado:2},
- {id:"ib0281-c3",tipo:"cuidar",vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Elena Fernández Villalba y su marido",asiento:"",deParte:"Cmte. José Luis Fernández Aparicio",nota:"Elena es la pediatra de su hija. Viajan 2.",atendido:false,creado:3},
- {id:"ib0281-c4",tipo:"cuidar",vuelo:"IB 0281",fecha:"2026-11-03",nombre:"María Verdú González",asiento:"",deParte:"Cmte. Jaime Arias González",nota:"Profesora de tenis de su hijo en Mallorca. Viaja con su tía Anastasia González Gámez.",atendido:false,creado:4},
- {id:"ib0281-c5",tipo:"cuidar",vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Anastasia González Gámez",asiento:"",deParte:"Cmte. Jaime Arias González",nota:"Tía de María Verdú González; viajan juntas.",atendido:false,creado:5},
- {id:"ib0281-c6",tipo:"cuidar",vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Catín Montaner",asiento:"",deParte:"Cmte. jubilado Eugenio Jaúdenes",nota:"Su prima.",atendido:false,creado:6},
- {id:"ib0281-t1",tipo:"transportin",orden:1,vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Leire (hija de Lola López Martínez)",asiento:"",deParte:"Sobrecargo Lola López Martínez",nota:"Cumple 17 años el día del vuelo.",atendido:false,creado:7},
- {id:"ib0281-t2",tipo:"transportin",orden:2,vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Marido o 2 hijas de Rosana Crespo",asiento:"",deParte:"TCP Rosana Crespo",nota:"Vendría o su marido o sus dos hijas de 14 años.",atendido:false,creado:8},
- {id:"ib0281-t3",tipo:"transportin",orden:3,vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Hijo de María Okada (7 años)",asiento:"",deParte:"TCP María Okada (intérprete de japonés)",nota:"Niño de 7 años.",atendido:false,creado:9},
- {id:"ib0281-t4",tipo:"transportin",orden:4,vuelo:"IB 0281",fecha:"2026-11-03",nombre:"Sandra Gómez y su pareja",asiento:"",deParte:"TCP Sandra Gómez (Narrowbody, no es de esta tripulación)",nota:"Son 2 personas.",atendido:false,creado:10}
-];
+const SEED=[];
 const $=id=>document.getElementById(id);
 let rows=[], filter="up", tab="cuidar", kind="cuidar", editing=null, pendingDelete=null, sortables=[];
 
@@ -191,8 +180,8 @@ const el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt
 
 function flightText(fecha,vuelo){
   const same=rows.filter(r=>r.fecha===fecha&&norm(r.vuelo)===vuelo);
-  const cu=same.filter(r=>tipoOf(r)==="cuidar").sort((a,b)=>(a.creado||0)-(b.creado||0));
-  const tr=same.filter(r=>tipoOf(r)==="transportin").sort((a,b)=>(a.orden??1e9)-(b.orden??1e9)||(a.creado||0)-(b.creado||0));
+  const cu=same.filter(r=>tipoOf(r)==="cuidar").sort(byOrden);
+  const tr=same.filter(r=>tipoOf(r)==="transportin").sort(byOrden);
   const line=r=>{let s=r.nombre;if(r.deParte)s+=" — de "+r.deParte;if(r.nota)s+=" ("+r.nota+")";return s};
   let t="✈️ "+vuelo+" · "+fmtDate(fecha)+" · Recomendados\n";
   if(cu.length){t+="\n🟢 A CUIDAR (con plaza):\n";cu.forEach((r,i)=>{t+=(i+1)+". "+line(r)+" — Asiento: "+(r.asiento?norm(r.asiento):"__")+"\n"})}
@@ -207,7 +196,7 @@ function render(){
   const upcoming=rows.filter(r=>filter==="all"||(r.fecha||"")>=t);
   $("nCuidar").textContent=upcoming.filter(r=>tipoOf(r)==="cuidar").length;
   $("nTrans").textContent=upcoming.filter(r=>tipoOf(r)==="transportin").length;
-  $("hint").hidden=tab!=="transportin";
+  $("hint").hidden=false;
   const shown=upcoming.filter(r=>tipoOf(r)===tab);
   if(!shown.length){
     const e=el("div","empty");e.append(el("strong",null,tab==="cuidar"?"Nadie a cuidar":"Sin transportines"));
@@ -218,8 +207,7 @@ function render(){
   shown.forEach(r=>{const k=r.fecha+"|"+norm(r.vuelo);(groups[k]=groups[k]||[]).push(r)});
   Object.keys(groups).sort((a,b)=>filter==="all"?b.localeCompare(a):a.localeCompare(b)).forEach(k=>{
     const [fecha,vuelo]=k.split("|"), g=groups[k];
-    if(tab==="cuidar") g.sort((a,b)=>(a.asiento||"zz").localeCompare(b.asiento||"zz",undefined,{numeric:true}));
-    else g.sort((a,b)=>(a.orden??1e9)-(b.orden??1e9)||(a.creado||0)-(b.creado||0));
+    g.sort(byOrden);
     const done=g.filter(r=>r.atendido).length;
     const sec=el("section","flight"), h=el("div","fhead");
     h.append(el("div","fcode",vuelo),el("div","fdate",fmtDate(fecha)));
@@ -236,7 +224,7 @@ function render(){
     g.forEach((r,i)=>{
       const li=el("li",r.atendido?"attended":"");li.dataset.id=r.id;
       let lead;
-      if(tab==="cuidar"){lead=el("div","seat"+(r.asiento?"":" none"),r.asiento?norm(r.asiento):"—")}
+      if(tab==="cuidar"){lead=el("div","prio");lead.setAttribute("aria-label","Posición "+(i+1)+", arrastra para mover");lead.append(el("span","grip","⋮⋮"),el("div","seat"+(r.asiento?"":" none"),r.asiento?norm(r.asiento):"—"))}
       else{lead=el("div","prio");lead.setAttribute("aria-label","Prioridad "+(i+1)+", arrastra para mover");lead.append(el("span","grip","⋮⋮"),el("span","num",String(i+1)))}
       const w=el("div","who");w.append(el("div","name",r.nombre));
       if(r.deParte)w.append(el("div","from","De parte de "+r.deParte));
@@ -245,7 +233,7 @@ function render(){
       const ra=el("div","row-actions");
       const ed=el("button","link","Editar");ed.type="button";ed.onclick=()=>openForm(r);
       const mv=el("button","link",tab==="cuidar"?"Pasar a transportín":"Pasar a cuidar");mv.type="button";
-      mv.onclick=()=>upd(r.id,tab==="cuidar"?{tipo:"transportin",orden:nextOrden(r.fecha,r.vuelo)}:{tipo:"cuidar"});
+      mv.onclick=()=>upd(r.id,tab==="cuidar"?{tipo:"transportin",orden:nextOrden(r.fecha,r.vuelo,"transportin")}:{tipo:"cuidar",orden:nextOrden(r.fecha,r.vuelo,"cuidar")});
       const dl=el("button","link danger",pendingDelete===r.id?"¿Seguro? Toca para borrar":"Borrar");dl.type="button";
       dl.onclick=()=>{if(pendingDelete===r.id){pendingDelete=null;del(r.id)}else{pendingDelete=r.id;render()}};
       ra.append(ed,mv,dl);w.append(ra);
@@ -256,16 +244,18 @@ function render(){
       li.append(lead,w,ck);ul.append(li);
     });
     sec.append(ul);list.append(sec);
-    if(tab==="transportin"&&window.Sortable){
+    if(window.Sortable){
       sortables.push(Sortable.create(ul,{handle:".prio",animation:150,touchStartThreshold:4,
         onEnd:()=>{[...ul.children].forEach((li,idx)=>{const r=rows.find(x=>x.id===li.dataset.id);if(r)r.orden=idx+1});save();render()}}));
     }
   });
 }
 
-function nextOrden(fecha,vuelo){
-  return rows.filter(r=>tipoOf(r)==="transportin"&&r.fecha===fecha&&norm(r.vuelo)===norm(vuelo)).reduce((m,r)=>Math.max(m,r.orden||0),0)+1;
+function nextOrden(fecha,vuelo,tipo){
+  tipo=tipo||"transportin";
+  return rows.filter(r=>tipoOf(r)===tipo&&r.fecha===fecha&&norm(r.vuelo)===norm(vuelo)).reduce((m,r)=>Math.max(m,r.orden||0),0)+1;
 }
+const byOrden=(a,b)=>(a.orden??1e9)-(b.orden??1e9)||(a.creado||0)-(b.creado||0);
 function setKind(k){kind=k;$("kCuidar").setAttribute("aria-pressed",k==="cuidar");$("kTrans").setAttribute("aria-pressed",k==="transportin")}
 $("kCuidar").onclick=()=>setKind("cuidar");$("kTrans").onclick=()=>setKind("transportin");
 
@@ -290,10 +280,10 @@ $("form").addEventListener("submit",e=>{
   const data={tipo:kind,vuelo,fecha,nombre,asiento:norm($("iAsiento").value),deParte:$("iDeParte").value.trim(),nota:$("iNota").value.trim()};
   if(editing){
     const old=rows.find(r=>r.id===editing);
-    if(kind==="transportin"&&(tipoOf(old)!=="transportin"||old.fecha!==fecha||norm(old.vuelo)!==vuelo))data.orden=nextOrden(fecha,vuelo);
+    if(tipoOf(old)!==kind||old.fecha!==fecha||norm(old.vuelo)!==vuelo)data.orden=nextOrden(fecha,vuelo,kind);
     Object.assign(old,data);
   } else {
-    if(kind==="transportin")data.orden=nextOrden(fecha,vuelo);
+    data.orden=nextOrden(fecha,vuelo,kind);
     rows.push({id:uid(),...data,atendido:false,creado:Date.now()});
   }
   save(); $("form").hidden=true; editing=null; setTab(kind);
@@ -332,7 +322,7 @@ $("btnImportGo").onclick=()=>{
       asiento:norm(p.asiento),deParte:(p.deParte||"").trim(),nota:(p.nota||"").trim()};
     const ex=p.id&&rows.find(r=>r.id===p.id);
     if(ex){Object.assign(ex,rec2);if(p.orden!=null)ex.orden=p.orden;if(p.atendido!=null)ex.atendido=!!p.atendido}
-    else{if(rec2.tipo==="transportin")rec2.orden=p.orden??nextOrden(rec2.fecha,rec2.vuelo);rows.push({id:p.id||uid(),...rec2,atendido:!!p.atendido,creado:Date.now()+n})}
+    else{rec2.orden=p.orden??nextOrden(rec2.fecha,rec2.vuelo,rec2.tipo);rows.push({id:p.id||uid(),...rec2,atendido:!!p.atendido,creado:Date.now()+n})}
     n++});
   save();$("importMsg").textContent=n?("Importadas "+n+" personas."):"No había nadie con nombre en el bloque.";render();
 };
