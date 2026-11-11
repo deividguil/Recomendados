@@ -71,6 +71,30 @@ textarea{resize:vertical;min-height:60px}
 .mic.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .stepbtn{flex:none;width:42px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;font-size:20px;font-weight:600}
 .pcount{display:inline-block;margin-left:6px;padding:0 7px;border-radius:99px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:600;vertical-align:2px}
+.helpbtn{width:42px;padding:10px 0;font-family:var(--f-display);font-size:20px;font-weight:700;line-height:1}
+#help{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#help .hbar{position:sticky;top:0;z-index:2;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+#help .hbar h2{margin:0;font-family:var(--f-display);font-size:24px;text-transform:uppercase;letter-spacing:.03em}
+#help .hbar button{border:1px solid rgba(255,255,255,.35);background:transparent;color:inherit;border-radius:8px;padding:8px 14px;font-weight:600}
+#help .hbody{max-width:640px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
+#help .intro{margin:0 0 4px;color:var(--muted);font-size:14px}
+#help details{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#help summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 16px;font-family:var(--f-display);font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.03em}
+#help summary::-webkit-details-marker{display:none}
+#help summary .hn{color:var(--accent);min-width:20px}
+#help summary::after{content:"+";margin-left:auto;font-family:var(--f-body);font-weight:500;font-size:22px;color:var(--muted)}
+#help details[open] summary::after{content:"–"}
+#help .hc{padding:0 16px 14px;font-size:15px;line-height:1.5}
+#help .hc p{margin:0 0 10px}
+#help .hc ul,#help .hc ol{margin:0 0 10px;padding-left:20px}
+#help .hc li{margin-bottom:5px}
+#help .hc b{font-weight:600}
+#help .kb{font-family:var(--f-mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:0 5px;white-space:nowrap}
+#help .tip{background:var(--bg);border-left:4px solid var(--ink);border-radius:0 8px 8px 0;padding:8px 12px;margin:0 0 10px;font-size:14px}
+#help .tip.warn{border-color:var(--accent);background:var(--accent-soft)}
+#help .tip.ok{border-color:var(--ok);background:var(--ok-soft)}
+#help .gr{color:var(--ok);font-weight:700}#help .am{color:var(--amber);font-weight:700}#help .rd{color:var(--accent);font-weight:700}
+.empty .link{display:inline-block;margin-top:8px;font-size:14px;color:var(--accent)}
 .actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .msg{grid-column:1/-1;font-size:13px;color:var(--amber);margin:0}
 .flight{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -102,7 +126,7 @@ textarea{resize:vertical;min-height:60px}
 .tile b{position:relative;display:block;min-width:34px;padding:3px 4px 2px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:25px;line-height:1;font-variant-numeric:tabular-nums;color:var(--tile-ink);background:linear-gradient(to bottom,var(--tile) 0 49%,var(--tile-line) 49% 52%,var(--tile-low) 52%);border:1px solid var(--line);border-radius:5px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .tile span{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .cd .ps{margin-bottom:19px;margin-left:4px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.cd.soon .tile b{background:linear-gradient(to bottom,var(--accent) 0 49%,rgba(0,0,0,.25) 49% 52%,var(--accent) 52%);color:#fff;border-color:var(--accent)}
+.cd.soon .tile b{background:linear-gradient(to bottom,var(--accent) 0 49.5%,rgba(0,0,0,.1) 49.5% 51%,var(--accent) 51%);color:#fff;border-color:var(--accent)}
 .cd.soon .ps{color:var(--accent)}
 .cd.gone{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-top:2px}
 .recs{border-bottom:1px dashed var(--line);padding:10px 16px 12px;display:flex;flex-direction:column;gap:8px;background:var(--amber-soft)}
@@ -166,7 +190,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <h1>Recomendados <span>a bordo</span></h1>
       <div class="sub">Pasajeros que te han encargado, vuelo a vuelo.</div>
     </div>
-    <div style="display:flex;gap:8px"><button class="btn ghost" id="btnNewFlight" type="button">+ Vuelo</button><button class="btn" id="btnNew" type="button">+ Añadir</button></div>
+    <div style="display:flex;gap:8px"><button class="btn ghost helpbtn" id="btnHelp" type="button" aria-label="Ayuda">?</button><button class="btn ghost" id="btnNewFlight" type="button">+ Vuelo</button><button class="btn" id="btnNew" type="button">+ Añadir</button></div>
   </header>
 
   <div class="summary"><span><b id="nCuidar">0</b> a cuidar</span><span><b id="nTrans">0</b> pers. en transportín</span></div>
@@ -238,6 +262,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
   <div id="list"></div>
 
   <footer>
+    <button type="button" class="link" id="btnHelp2">Ayuda</button>
     <button type="button" class="link" id="btnCsv">Importar programación (CSV)</button>
     <input type="file" id="iCsv" accept=".csv,text/csv,text/plain" hidden>
     <button type="button" class="link" id="btnImport">Importar lista</button>
@@ -245,6 +270,98 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
   </footer>
 </div>
 
+
+<div id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="hbar"><h2 id="helpTitle">Ayuda</h2><button type="button" id="btnHelpClose">Cerrar</button></div>
+  <div class="hbody">
+    <p class="intro">Toca cada apartado para abrirlo.</p>
+
+    <details open><summary><span class="hn">1</span>Primeros pasos</summary><div class="hc">
+      <ol>
+        <li>Añade la app a la <b>pantalla de inicio</b>. En iPhone: Safari → Compartir → <i>Añadir a pantalla de inicio</i>. En Android: Chrome → ⋮ → <i>Instalar aplicación</i>.</li>
+        <li>Importa tu programación: abajo del todo, <span class="kb">Importar programación (CSV)</span>.</li>
+        <li>Añade a tus recomendados en cada vuelo.</li>
+      </ol>
+      <p class="tip">Ábrela siempre desde el icono. Así funciona sin conexión y el iPhone no borra los datos.</p>
+    </div></details>
+
+    <details><summary><span class="hn">2</span>La pantalla principal</summary><div class="hc">
+      <ul>
+        <li>Cada vuelo es una tarjeta con su <b>cuenta atrás</b> (días, horas : minutos para salir). Con menos de 24 h se pone en rojo.</li>
+        <li>La <b>fecha</b> es la local del aeropuerto de salida. Al lado, la hora local y la hora Z.</li>
+        <li>Cada vuelo tiene dos listas: <span class="gr">A CUIDAR</span> y <span class="am">TRANSPORTINES</span>.</li>
+        <li><span class="kb">Próximos</span> muestra de hoy en adelante; <span class="kb">Todos</span> incluye los vuelos pasados.</li>
+        <li>Si falta el trayecto, toca <span class="kb">+ trayecto</span> en la tarjeta.</li>
+      </ul>
+    </div></details>
+
+    <details><summary><span class="hn">3</span>Importar la programación</summary><div class="hc">
+      <p>Usa el archivo <b>CSV para Outlook</b> de tu programación. La app crea tus vuelos vacíos con trayecto, hora y avión; ignora firmas y días libres.</p>
+      <p class="tip ok">Puedes importar el mismo mes varias veces: los vuelos se actualizan, no se duplican, y conservan recomendados y recados.</p>
+      <p>Si un aeropuerto no se reconoce, la fecha se calcula con la hora de Madrid. Corrígela con <span class="kb">Editar vuelo</span>.</p>
+    </div></details>
+
+    <details><summary><span class="hn">4</span>Añadir recomendados</summary><div class="hc">
+      <p>Toca <span class="kb">+ Añadir</span> en la franja verde (cuidar) o amarilla (transportín) del vuelo. El vuelo y la fecha ya vienen puestos.</p>
+      <ul>
+        <li><b>Personas</b>: para familias o grupos, con − y +. Sale como «4 pers.» y suma en los totales.</li>
+        <li><b>Asiento</b>: déjalo vacío si aún no lo sabes.</li>
+        <li><b>De parte de</b> y <b>Nota</b>: quién lo pide y cualquier detalle.</li>
+      </ul>
+      <p>El <b>micrófono</b> de cada campo sirve para dictar: tócalo, habla y vuelve a tocarlo. Si no responde, usa el micrófono del teclado.</p>
+    </div></details>
+
+    <details><summary><span class="hn">5</span>Ordenar, atender y editar</summary><div class="hc">
+      <ul>
+        <li><b>Ordenar</b>: mantén el dedo en <span class="kb">⋮⋮</span> y arrastra. En transportines, el número es la prioridad.</li>
+        <li><b>Atendido / a bordo</b>: el círculo de la derecha.</li>
+        <li><span class="kb">Editar</span> para cambiar datos, como el asiento cuando te lo pasen.</li>
+        <li><span class="kb">Pasar a transportín</span> / <span class="kb">Pasar a cuidar</span> si cambia su situación.</li>
+        <li><span class="kb">Borrar</span> pide un segundo toque para confirmar.</li>
+      </ul>
+    </div></details>
+
+    <details><summary><span class="hn">6</span>Enviar la lista a la sobrecargo</summary><div class="hc">
+      <p><span class="kb">Enviar lista</span> abre WhatsApp con el mensaje ya escrito: vuelo, trayecto, fecha, los de cuidar con su asiento (o «__») y los transportines por orden. <span class="kb">Copiar texto</span> copia lo mismo.</p>
+      <p>Si faltan asientos, el mensaje termina pidiéndolos. Los recados no se incluyen.</p>
+    </div></details>
+
+    <details><summary><span class="hn">7</span>Vuelos que no son tuyos</summary><div class="hc">
+      <ol>
+        <li>Toca <span class="kb">+ Vuelo</span> arriba. Viene marcado <b>No es mi vuelo</b>.</li>
+        <li>Pon vuelo, fecha, trayecto, <b>hora de salida local</b>, comandante y teléfono.</li>
+        <li>Añade los recomendados como en cualquier vuelo.</li>
+      </ol>
+      <p>Se ven con borde rojo y la franja <span class="rd">NO ES MI VUELO</span>. <span class="kb">Pedírselo por WhatsApp</span> abre el chat del comandante con la petición redactada.</p>
+      <p>Con <span class="kb">Editar vuelo</span> puedes completar datos o cambiarlo a «Mi vuelo». Si aparece en tu programación importada, pasa a ser tuyo solo.</p>
+    </div></details>
+
+    <details><summary><span class="hn">8</span>Recados</summary><div class="hc">
+      <p>Solo en tus vuelos. Toca <span class="kb">Recados</span>, luego <span class="kb">+ Añadir recado</span>. Puedes dictarlos, ordenarlos arrastrando desde <span class="kb">⋮⋮</span> y marcarlos como hechos.</p>
+      <p>Con la zona cerrada, el botón indica cuántos quedan pendientes.</p>
+    </div></details>
+
+    <details><summary><span class="hn">9</span>Tus datos y la copia</summary><div class="hc">
+      <p>Todo se guarda <b>solo en este teléfono</b>. Nadie más lo ve; si compartes el enlace, la otra persona empieza vacía. Las actualizaciones no borran nada.</p>
+      <p class="tip warn">Si pierdes o cambias de móvil, o borras los datos del navegador, se pierde todo. Haz copia de vez en cuando.</p>
+      <ul>
+        <li><b>Hacer copia</b>: <span class="kb">Copia de seguridad</span>, abajo del todo. Guárdala o mándatela.</li>
+        <li><b>Recuperar</b>: copia el contenido del archivo y pégalo en <span class="kb">Importar lista</span>.</li>
+      </ul>
+    </div></details>
+
+    <details><summary><span class="hn">10</span>Problemas frecuentes</summary><div class="hc">
+      <ul>
+        <li><b>No veo una versión nueva</b>: cierra la app del todo y ábrela; si no, repite una vez más.</li>
+        <li><b>No encuentro un vuelo pasado</b>: cambia a <span class="kb">Todos</span>.</li>
+        <li><b>El micrófono no va</b>: revisa el permiso en los ajustes del navegador o usa el del teclado.</li>
+        <li><b>El CSV no encuentra vuelos</b>: usa el archivo exportado para Outlook, sin abrirlo antes con Excel.</li>
+        <li><b>Alguien está repetido</b>: borra la copia con <span class="kb">Borrar</span>.</li>
+        <li><b>WhatsApp no abre</b>: usa <span class="kb">Copiar texto</span> y pégalo.</li>
+      </ul>
+    </div></details>
+  </div>
+</div>
 <script>
 const KEY="recomendados.v1";
 const SEED=[];
@@ -305,6 +422,7 @@ function render(){
   if(!Object.keys(groups).length){
     const e=el("div","empty");e.append(el("strong",null,"Sin vuelos"));
     e.append((rows.length||flights.length)&&filter==="up"?"No hay nada en vuelos próximos. Mira en «Todos» o añade uno nuevo.":"Pulsa «+ Añadir», importa tu programación o la lista que te pase Claude.");
+    if(!rows.length&&!flights.length){e.append(el("br"));const hl=el("button","link","¿Primera vez? Abre la ayuda");hl.type="button";hl.onclick=openHelp;e.append(hl)}
     list.append(e);return;
   }
   Object.keys(groups).sort((a,b)=>filter==="all"?b.localeCompare(a):a.localeCompare(b)).forEach(k=>{try{renderFlight(k,groups[k],list)}catch(err){console.error(err)}});
@@ -713,6 +831,13 @@ function repair(){
   flights=flights.filter(f=>{if(seen[f.id]){Object.assign(seen[f.id],{...f,...seen[f.id]});return false}seen[f.id]=f;return true});
   save();saveV();
 }
+function openHelp(){const h=$("help");if(!h.hidden)return;h.hidden=false;h.scrollTop=0;document.body.style.overflow="hidden";
+  try{history.pushState({help:1},"")}catch(e){}$("btnHelpClose").focus()}
+function closeHelp(fromPop){const h=$("help");if(h.hidden)return;h.hidden=true;document.body.style.overflow="";
+  if(!fromPop&&history.state&&history.state.help)history.back()}
+$("btnHelp").onclick=openHelp;$("btnHelp2").onclick=openHelp;$("btnHelpClose").onclick=()=>closeHelp(false);
+window.addEventListener("popstate",()=>closeHelp(true));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeHelp(false)});
 load(); loadV(); repair(); render();
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
