@@ -388,7 +388,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
 
     <details><summary><span class="hn">8</span>Recados</summary><div class="hc">
       <p>Solo en tus vuelos. Toca <span class="kb">Recados</span>, luego <span class="kb">+ Añadir recado</span>. Puedes dictarlos, ordenarlos arrastrando desde <span class="kb">⋮⋮</span> y marcarlos como hechos.</p>
-      <p>Con la zona cerrada, el botón indica cuántos quedan pendientes.</p>
+      <p>Si un vuelo tiene recados, la lista se ve abierta siempre. Puedes plegarla con <span class="kb">Ocultar recados</span> y se queda así hasta que pulses <span class="kb">Ver recados</span>, que también indica cuántos quedan pendientes.</p>
     </div></details>
 
     <details><summary><span class="hn">9</span>Tus datos y la copia</summary><div class="hc">
@@ -540,11 +540,12 @@ function renderFlight(k,g,list){
   const ef=el("button","link","Editar vuelo");ef.type="button";ef.onclick=()=>openFlightForm(fecha,vuelo);bar.append(ef);
   if(!(fl&&fl.ajeno)){
     const recs=(fl&&fl.recados)||[], pend=recs.filter(x=>!x.hecho).length, key=fkey(fecha,vuelo);
-    const rb=el("button","link recbtn",(recOpen.has(key)?"Ocultar recados":"Recados")+(recs.length?" ("+(pend?pend+" pendiente"+(pend>1?"s":""):"hechos ✓")+")":""));rb.type="button";
-    rb.onclick=()=>{recOpen.has(key)?recOpen.delete(key):recOpen.add(key);render()};
+    const open=recIsOpen(key,recs.length);
+    const rb=el("button","link recbtn",(open?"Ocultar recados":recs.length?"Ver recados":"Recados")+(recs.length?" ("+(pend?pend+" pendiente"+(pend>1?"s":""):"hechos ✓")+")":""));rb.type="button";
+    rb.onclick=()=>{if(open){recOpen.delete(key);if(recs.length)recHidden.add(key)}else{recHidden.delete(key);recOpen.add(key)}saveHidden();render()};
     bar.prepend(rb);bar.style.justifyContent="space-between";
     sec.append(bar);
-    if(recOpen.has(key))sec.append(recadosEl(fecha,vuelo));
+    if(open)sec.append(recadosEl(fecha,vuelo));
   } else sec.append(bar);
   if(!g.length){
     const np=el("div","nopax");np.append(el("span",null,"Sin recomendados todavía."));
@@ -650,7 +651,11 @@ function paintCd(c){
 }
 setInterval(()=>document.querySelectorAll(".cd[data-t]").forEach(paintCd),20000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)document.querySelectorAll(".cd[data-t]").forEach(paintCd)});
-const recOpen=new Set();
+/* Con recados, la lista se ve abierta salvo que la hayas ocultado a propósito */
+const recOpen=new Set(), KEYH="recomendados.recOcultos";
+let recHidden=new Set();try{recHidden=new Set(JSON.parse(localStorage.getItem(KEYH)||"[]"))}catch(e){}
+const saveHidden=()=>{try{localStorage.setItem(KEYH,JSON.stringify([...recHidden]))}catch(e){}};
+const recIsOpen=(key,n)=>recOpen.has(key)||(n>0&&!recHidden.has(key));
 function recadosEl(fecha,vuelo){
   const box=el("div","recs");box.append(el("h3",null,"Recados"));
   const fl=getFlight(fecha,vuelo), recs=(fl&&fl.recados)||[];
