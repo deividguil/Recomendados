@@ -31,6 +31,7 @@
 :root[data-tema="enchufe"]{--bg:#edf3ee;--card:#ffffff;--ink:#12301f;--muted:#56705f;--line:#d2e0d5;--accent:#1c8f45;--accent-soft:#e0f3e6;--on-accent:#ffffff;--ok:#0f7c8a;--ok-soft:#ddf1f3;--tile-low:#e9f0eb}
 :root[data-tema="atardecer"]{--bg:#f6efea;--card:#fffaf6;--ink:#3a1d3a;--muted:#7a6070;--line:#e8d9d0;--accent:#d9561a;--accent-soft:#fde5d6;--on-accent:#ffffff;--tile-low:#f3ebe5}
 :root[data-tema="oceano"]{--bg:#e9f2f5;--card:#ffffff;--ink:#0d2c3a;--muted:#557482;--line:#cfe0e6;--accent:#0a7c9c;--accent-soft:#d9eef5;--on-accent:#ffffff;--tile-low:#e6eff2}
+:root[data-tema="noche"]{--bg:#0b0c12;--card:#151724;--ink:#eceef6;--muted:#9096ad;--line:#272a3c;--accent:#9d8cff;--accent-soft:#261f4d;--on-accent:#120a33;--alert:#ff5f6d;--alert-soft:#3a1a22;--ok:#5fd19a;--ok-soft:#163327;--amber:#f2b552;--amber-soft:#382a12;--tile:#22253a;--tile-low:#1c1f31;--tile-ink:#f2f3fa;--tile-line:#0b0c12;color-scheme:dark}
 @media (prefers-color-scheme:dark){
 :root[data-tema="enchufe"]{--bg:#0c1a12;--card:#142a1d;--ink:#e3f2e8;--muted:#93b3a0;--line:#244233;--accent:#55d681;--accent-soft:#173b25;--on-accent:#06210f;--ok:#4cc7d6;--ok-soft:#12343a;--tile:#1d3a28;--tile-low:#183121;--tile-line:#0c1a12}
 :root[data-tema="atardecer"]{--bg:#1c1020;--card:#2a1a2e;--ink:#f5e9f0;--muted:#b9a0b2;--line:#3f2a45;--accent:#ff8a4c;--accent-soft:#44241f;--on-accent:#2a1206;--tile:#3a2640;--tile-low:#311f36;--tile-line:#1c1020}
@@ -55,6 +56,7 @@ button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .logo{width:44px;height:44px;border-radius:11px;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .temas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tema{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px 12px;font-weight:600;font-size:15px}
+.tema:last-child:nth-child(odd){grid-column:1/-1}
 .tema small{font-weight:400;font-size:12px;color:var(--muted)}
 .tema .sw{display:flex;margin-bottom:4px}
 .tema .sw i{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);margin-right:-6px}
@@ -127,18 +129,18 @@ textarea{resize:vertical;min-height:60px}
 .fbanner .bv{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1}
 .fbanner .br{font-family:var(--f-display);font-weight:600;font-size:19px;opacity:.85}
 .fbanner .bd{font-size:14px;font-weight:600;text-transform:capitalize}
-.fbanner.ajeno{background:var(--alert);color:#fff}
+.fbanner.ajeno{background:repeating-linear-gradient(135deg,var(--ink) 0 12px,color-mix(in srgb,var(--ink) 82%,var(--card)) 12px 24px);color:var(--bg)}
 .fhead{background:color-mix(in srgb,var(--ink) 6%,var(--card));display:flex;align-items:center;gap:10px 14px;padding:12px 16px;border-bottom:1px dashed var(--line);flex-wrap:wrap}
 .fcode{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1;letter-spacing:.02em}
 .froute{border:0;background:none;padding:0;font-family:var(--f-display);font-weight:600;font-size:22px;line-height:1;letter-spacing:.03em;color:var(--muted)}
 .froute.add{font-family:var(--f-body);font-size:12px;font-weight:600;text-decoration:underline;letter-spacing:0}
 .frinput{width:110px;font-size:16px;padding:4px 8px;text-transform:uppercase}
 .ftime{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
-.flight.ajeno{border:2px solid var(--alert)}
-.ajenoTag{background:var(--alert);color:#fff;font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;padding:5px 16px}
-.cmte{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:10px 16px;background:var(--alert-soft);border-bottom:1px dashed var(--line)}
+.flight.ajeno{border:2px dashed color-mix(in srgb,var(--ink) 55%,var(--card));background:color-mix(in srgb,var(--ink) 3%,var(--card))}
+.ajenoTag{background:repeating-linear-gradient(135deg,var(--ink) 0 12px,color-mix(in srgb,var(--ink) 82%,var(--card)) 12px 24px);color:var(--bg);font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;padding:5px 16px}
+.cmte{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:10px 16px;background:color-mix(in srgb,var(--ink) 8%,var(--card));border-bottom:1px dashed var(--line)}
 .cmte .who{flex:1 1 160px}
-.cmte .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--alert);font-weight:700}
+.cmte .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
 .cmte .nm{font-weight:600;overflow-wrap:anywhere}
 .cmte .tl{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 .cmte .acts{display:flex;gap:8px}
@@ -220,7 +222,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <h1>Recomendados <span>a bordo</span></h1>
       <div class="sub">Pasajeros que te han encargado, vuelo a vuelo.</div>
     </div></div>
-    <div style="display:flex;gap:8px"><button class="btn ghost helpbtn" id="btnTema" type="button" aria-label="Cambiar colores"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.9 1.4-1.8-.3-.8-.1-1.7.7-2.1.4-.2.9-.2 1.4-.2H18a3 3 0 0 0 3-3c0-5-4-8.9-9-8.9z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg></button><button class="btn ghost helpbtn" id="btnHelp" type="button" aria-label="Ayuda">?</button><button class="btn ghost" id="btnNewFlight" type="button">+ Vuelo</button><button class="btn" id="btnNew" type="button">+ Añadir</button></div>
+    <div style="display:flex;gap:8px"><button class="btn ghost helpbtn" id="btnTema" type="button" aria-label="Cambiar colores"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.9 1.4-1.8-.3-.8-.1-1.7.7-2.1.4-.2.9-.2 1.4-.2H18a3 3 0 0 0 3-3c0-5-4-8.9-9-8.9z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg></button><button class="btn ghost helpbtn" id="btnHelp" type="button" aria-label="Ayuda">?</button><button class="btn" id="btnNewFlight" type="button">+ Vuelo</button></div>
   </header>
 
   <div class="panel" id="temaPanel" hidden>
@@ -229,9 +231,10 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <button type="button" class="tema" data-t="" role="radio"><span class="sw"><i style="background:#14213a"></i><i style="background:#c8102e"></i><i style="background:#eef0f3"></i></span>Clásico<small>Azul noche y rojo</small></button>
       <button type="button" class="tema" data-t="enchufe" role="radio"><span class="sw"><i style="background:#12301f"></i><i style="background:#1c8f45"></i><i style="background:#edf3ee"></i></span>Enchufe<small>Verdes, como el logo</small></button>
       <button type="button" class="tema" data-t="atardecer" role="radio"><span class="sw"><i style="background:#3a1d3a"></i><i style="background:#d9561a"></i><i style="background:#f6efea"></i></span>Atardecer<small>Ciruela y naranja</small></button>
+      <button type="button" class="tema" data-t="noche" role="radio"><span class="sw"><i style="background:#0b0c12"></i><i style="background:#9d8cff"></i><i style="background:#22253a"></i></span>Noche<small>Siempre oscuro, violeta</small></button>
       <button type="button" class="tema" data-t="oceano" role="radio"><span class="sw"><i style="background:#0d2c3a"></i><i style="background:#0a7c9c"></i><i style="background:#e9f2f5"></i></span>Océano<small>Petróleo y turquesa</small></button>
     </div>
-    <p class="full sub" style="margin:0">El modo claro u oscuro sigue al del móvil. «No es mi vuelo» y los avisos urgentes siempre van en rojo.</p>
+    <p class="full sub" style="margin:0">Noche es siempre oscuro. Los demás se ponen claros u oscuros según el ajuste del móvil. Los avisos urgentes van siempre en rojo.</p>
     <div class="actions"><button type="button" class="btn" id="btnTemaOk">Hecho</button></div>
   </div>
 
@@ -336,7 +339,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
         <li>Cada vuelo tiene dos listas: <span class="gr">A CUIDAR</span> y <span class="am">TRANSPORTINES</span>.</li>
         <li><span class="kb">Próximos</span> muestra de hoy en adelante; <span class="kb">Todos</span> incluye los vuelos pasados.</li>
         <li>Si falta el trayecto, toca <span class="kb">+ trayecto</span> en la tarjeta.</li>
-        <li>El botón de la <b>paleta</b>, arriba, cambia los colores de la app: Clásico, Enchufe, Atardecer u Océano.</li>
+        <li>El botón de la <b>paleta</b>, arriba, cambia los colores de la app: Clásico, Enchufe, Atardecer, Noche (siempre oscuro) u Océano.</li>
       </ul>
     </div></details>
 
@@ -377,7 +380,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
         <li>Pon vuelo, fecha, trayecto, <b>hora de salida local</b>, comandante y teléfono.</li>
         <li>Añade los recomendados como en cualquier vuelo.</li>
       </ol>
-      <p>Se ven con borde rojo y la franja <span class="rd">NO ES MI VUELO</span>. <span class="kb">Pedírselo por WhatsApp</span> abre el chat del comandante con la petición redactada.</p>
+      <p>Se ven con <b>borde discontinuo</b> y una franja <b>rayada</b> que dice NO ES MI VUELO. <span class="kb">Pedírselo por WhatsApp</span> abre el chat del comandante con la petición redactada.</p>
       <p>Con <span class="kb">Editar vuelo</span> puedes completar datos o cambiarlo a «Mi vuelo». Si aparece en tu programación importada, pasa a ser tuyo solo.</p>
     </div></details>
 
@@ -467,7 +470,7 @@ function render(){
   flights.filter(f=>filter==="all"||(f.fecha||"")>=t).forEach(f=>{if(!groups[f.id])groups[f.id]=[]});
   if(!Object.keys(groups).length){
     const e=el("div","empty");e.append(el("strong",null,"Sin vuelos"));
-    e.append((rows.length||flights.length)&&filter==="up"?"No hay nada en vuelos próximos. Mira en «Todos» o añade uno nuevo.":"Pulsa «+ Añadir», importa tu programación o la lista que te pase Claude.");
+    e.append((rows.length||flights.length)&&filter==="up"?"No hay nada en vuelos próximos. Mira en «Todos» o añade uno nuevo.":"Importa tu programación (abajo del todo) o crea un vuelo con «+ Vuelo». Después añade los recomendados dentro de cada vuelo.");
     if(!rows.length&&!flights.length){e.append(el("br"));const hl=el("button","link","¿Primera vez? Abre la ayuda");hl.type="button";hl.onclick=openHelp;e.append(hl)}
     list.append(e);return;
   }
@@ -478,7 +481,7 @@ function renderFlight(k,g,list){
   const cu=g.filter(r=>tipoOf(r)==="cuidar").sort(byOrden), tr=g.filter(r=>tipoOf(r)==="transportin").sort(byOrden);
   const P=r=>r.personas||1, sumP=a=>a.reduce((x,r)=>x+P(r),0);
   const fl=getFlight(fecha,vuelo);
-  const sep=el("div","fsep",fmtDate(fecha)+" · "+vuelo);list.append(sep);
+  const sep=el("div","fsep",fmtDate(fecha)+" · "+vuelo+(fl&&fl.ajeno?" · no es mi vuelo":""));list.append(sep);
   const sec=el("section","flight"+(fl&&fl.ajeno?" ajeno":"")), h=el("div","fhead");sec.dataset.key=k;
   if(fl&&fl.ajeno)sec.append(el("div","ajenoTag","No es mi vuelo"));
   const fc=el("div","fcol");fc.append(el("div","fcode",vuelo));
@@ -684,7 +687,7 @@ function openForm(r,preset){
   $("iPersonas").value=r?(r.personas||1):1;
   $("form").hidden=false; window.scrollTo({top:0,behavior:"smooth"});
 }
-$("btnNew").onclick=()=>openForm(null);
+
 $("pMenos").onclick=()=>{$("iPersonas").value=Math.max(1,(parseInt($("iPersonas").value)||1)-1)};
 $("pMas").onclick=()=>{$("iPersonas").value=Math.min(20,(parseInt($("iPersonas").value)||1)+1)};
 function paintBanner(){
