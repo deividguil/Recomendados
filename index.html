@@ -238,7 +238,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <p class="full sub" style="margin:0">Noche es siempre oscuro. Los demás se ponen claros u oscuros según el ajuste del móvil. Los avisos urgentes van siempre en rojo.</p>
   </div>
 
-  <div class="summary"><span><b id="nCuidar">0</b> a cuidar</span><span><b id="nTrans">0</b> pers. en transportín</span></div>
+  <div class="summary"><span><b id="nCuidar">0</b> pers. a cuidar</span><span><b id="nTrans">0</b> pers. en transportín</span></div>
 
   <div class="toolbar">
     <div class="seg" role="group" aria-label="Filtro">
@@ -463,7 +463,7 @@ function render(){
   parkForms();
   const t=today(), list=$("list"); list.textContent="";
   const upcoming=rows.filter(r=>filter==="all"||(r.fecha||"")>=t);
-  $("nCuidar").textContent=upcoming.filter(r=>tipoOf(r)==="cuidar").length;
+  $("nCuidar").textContent=upcoming.filter(r=>tipoOf(r)==="cuidar").reduce((a,r)=>a+(r.personas||1),0);
   $("nTrans").textContent=upcoming.filter(r=>tipoOf(r)==="transportin").length;
   $("hint").hidden=false;
   $("nTrans").textContent=upcoming.filter(r=>tipoOf(r)==="transportin").reduce((a,r)=>a+(r.personas||1),0);
