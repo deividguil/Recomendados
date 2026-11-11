@@ -60,6 +60,8 @@ textarea{resize:vertical;min-height:60px}
 .mic{flex:none;width:42px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;display:grid;place-items:center}
 .mic svg{width:18px;height:18px}
 .mic.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.stepbtn{flex:none;width:42px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;font-size:20px;font-weight:600}
+.pcount{display:inline-block;margin-left:6px;padding:0 7px;border-radius:99px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:600;vertical-align:2px}
 .actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .msg{grid-column:1/-1;font-size:13px;color:var(--amber);margin:0}
 .flight{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -82,11 +84,15 @@ textarea{resize:vertical;min-height:60px}
 .cmte .call{border:1px solid var(--line);background:var(--card);color:var(--ink)}
 .fbar{display:flex;justify-content:flex-end;gap:16px;padding:8px 16px;border-bottom:1px dashed var(--line)}
 .fcol{display:flex;flex-direction:column;gap:3px}
-.cd{display:flex;align-items:flex-start;gap:5px;margin-top:4px}
+.cd{display:flex;align-items:flex-end;gap:5px;margin-top:4px}
+.cd .colon{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1;color:var(--tile-ink);margin:0 -1px 17px}
+.cd.soon .colon{color:var(--accent)}
+.tile.big{margin-right:4px}
+.tile.big b{font-size:33px;min-width:46px;padding:4px 5px 3px}
 .tile{display:flex;flex-direction:column;align-items:center;gap:2px}
 .tile b{position:relative;display:block;min-width:34px;padding:3px 4px 2px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:25px;line-height:1;font-variant-numeric:tabular-nums;color:var(--tile-ink);background:linear-gradient(to bottom,var(--tile) 0 49%,var(--tile-line) 49% 52%,var(--tile-low) 52%);border:1px solid var(--line);border-radius:5px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .tile span{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.cd .ps{align-self:center;margin-top:-12px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cd .ps{margin-bottom:19px;margin-left:4px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .cd.soon .tile b{background:linear-gradient(to bottom,var(--accent) 0 49%,rgba(0,0,0,.25) 49% 52%,var(--accent) 52%);color:#fff;border-color:var(--accent)}
 .cd.soon .ps{color:var(--accent)}
 .cd.gone{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-top:2px}
@@ -177,8 +183,9 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <label>Fecha<input id="iFecha" type="date"></label>
     <label class="full">Trayecto<input id="iTrayecto" placeholder="MAD-NRT" autocomplete="off" autocapitalize="characters"></label>
     <label class="full">Nombre del pasajero<span class="field"><input id="iNombre" placeholder="Nombre y apellidos" autocomplete="off"><button type="button" class="mic" data-for="iNombre" aria-label="Dictar nombre"></button></span></label>
+    <label>Personas<span class="field"><button type="button" class="stepbtn" id="pMenos" aria-label="Una persona menos">−</button><input id="iPersonas" type="number" inputmode="numeric" min="1" max="20" value="1" style="text-align:center"><button type="button" class="stepbtn" id="pMas" aria-label="Una persona más">+</button></span></label>
     <label>Asiento<span class="field"><input id="iAsiento" placeholder="Vacío si no lo sabes" autocomplete="off"><button type="button" class="mic" data-for="iAsiento" aria-label="Dictar asiento"></button></span></label>
-    <label>De parte de<span class="field"><input id="iDeParte" placeholder="Quién te lo pide" autocomplete="off"><button type="button" class="mic" data-for="iDeParte" aria-label="Dictar de parte de quién"></button></span></label>
+    <label class="full">De parte de<span class="field"><input id="iDeParte" placeholder="Quién te lo pide" autocomplete="off"><button type="button" class="mic" data-for="iDeParte" aria-label="Dictar de parte de quién"></button></span></label>
     <label class="full">Nota<span class="field"><textarea id="iNota" placeholder="Primer vuelo, cumpleaños, va en business…"></textarea><button type="button" class="mic" data-for="iNota" aria-label="Dictar nota"></button></span></label>
     <p class="msg" id="formMsg"></p>
     <div class="actions">
@@ -196,7 +203,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <label>Vuelo<input id="fVuelo" placeholder="IB 3166" autocomplete="off"></label>
     <label>Fecha<input id="fFecha" type="date"></label>
     <label>Trayecto<input id="fTrayecto" placeholder="MAD-BCN" autocomplete="off" autocapitalize="characters"></label>
-    <label>Hora de salida (España)<input id="fHora" type="time"></label>
+    <label>Hora de salida (local)<input id="fHora" type="time"></label>
     <div class="full" id="cmteFields" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <label>Comandante<span class="field"><input id="fCmte" placeholder="Nombre del comandante" autocomplete="off"><button type="button" class="mic" data-for="fCmte" aria-label="Dictar comandante"></button></span></label>
       <label>Teléfono<input id="fTel" type="tel" inputmode="tel" placeholder="600 123 456" autocomplete="off"></label>
@@ -268,7 +275,7 @@ function flightText(fecha,vuelo){
   const same=rows.filter(r=>r.fecha===fecha&&fv(r.vuelo)===vuelo);
   const cu=same.filter(r=>tipoOf(r)==="cuidar").sort(byOrden);
   const tr=same.filter(r=>tipoOf(r)==="transportin").sort(byOrden);
-  const line=r=>{let s=r.nombre;if(r.deParte)s+=" — de "+r.deParte;if(r.nota)s+=" ("+r.nota+")";return s};
+  const line=r=>{let s=r.nombre+((r.personas||1)>1?" ("+r.personas+" pers.)":"");if(r.deParte)s+=" — de "+r.deParte;if(r.nota)s+=" ("+r.nota+")";return s};
   const fl=getFlight(fecha,vuelo);
   let t="✈️ "+vuelo+(fl&&fl.trayecto?" "+fmtRoute(fl.trayecto):"")+" · "+fmtDate(fecha)+" · Recomendados\n";
   if(cu.length){t+="\n🟢 A CUIDAR (con plaza):\n";cu.forEach((r,i)=>{t+=(i+1)+". "+line(r)+" — Asiento: "+(r.asiento?norm(r.asiento):"__")+"\n"})}
@@ -293,8 +300,10 @@ function render(){
     e.append((rows.length||flights.length)&&filter==="up"?"No hay nada en vuelos próximos. Mira en «Todos» o añade uno nuevo.":"Pulsa «+ Añadir», importa tu programación o la lista que te pase Claude.");
     list.append(e);return;
   }
-  Object.keys(groups).sort((a,b)=>filter==="all"?b.localeCompare(a):a.localeCompare(b)).forEach(k=>{
-    const [fecha,vuelo]=k.split("|"), g=groups[k];
+  Object.keys(groups).sort((a,b)=>filter==="all"?b.localeCompare(a):a.localeCompare(b)).forEach(k=>{try{renderFlight(k,groups[k],list)}catch(err){console.error(err)}});
+}
+function renderFlight(k,g,list){{
+    const [fecha,vuelo]=k.split("|");
     g.sort(byOrden);
     const done=g.filter(r=>r.atendido).length;
     const fl=getFlight(fecha,vuelo);
@@ -303,10 +312,11 @@ function render(){
     const fc=el("div","fcol");fc.append(el("div","fcode",vuelo));
     const dep=depTime(fl);if(dep){const cd=el("div","cd");cd.dataset.t=dep;fc.append(cd);paintCd(cd)}
     h.append(fc,routeEl(fecha,vuelo,fl),el("div","fdate",fmtDate(fecha)));
-    if(fl&&fl.salidaZ)h.append(el("span","ftime",fl.salidaZ+"Z"+(fl.avion?" · "+fl.avion:"")));
-    else if(fl&&fl.hora)h.append(el("span","ftime","Sale "+fl.hora));
+    if(fl&&fl.salidaZ)h.append(el("span","ftime",(fl.salidaLoc?"Sale "+fl.salidaLoc+" local · ":"")+fl.salidaZ+"Z"+(fl.avion?" · "+fl.avion:"")));
+    else if(fl&&fl.hora)h.append(el("span","ftime","Sale "+fl.hora+" local"));
     if(!g.length)h.append(el("div","count zero","Sin recomendados"));
-    else h.append(tab==="cuidar"?el("div","count"+(done===g.length?" done":""),done+"/"+g.length+" atendidos"):el("div","count sb",g.length+" en stand-by · "+done+" a bordo"));
+    else{const P=r=>r.personas||1, tot=g.reduce((a,r)=>a+P(r),0), totDone=g.filter(r=>r.atendido).reduce((a,r)=>a+P(r),0);
+      h.append(tab==="cuidar"?el("div","count"+(done===g.length?" done":""),done+"/"+g.length+" atendidos"+(tot>g.length?" · "+tot+" pers.":"")):el("div","count sb",tot+" pers. en stand-by · "+totDone+" a bordo"))}
     const anyPax=rows.some(r=>r.fecha===fecha&&fv(r.vuelo)===vuelo);
     const sh=el("div","share");
     const wa=el("a",null,"Enviar lista");wa.href="https://wa.me/?text="+encodeURIComponent(flightText(fecha,vuelo));wa.target="_blank";wa.rel="noopener";
@@ -353,7 +363,7 @@ function render(){
       let lead;
       if(tab==="cuidar"){lead=el("div","prio");lead.setAttribute("aria-label","Posición "+(i+1)+", arrastra para mover");lead.append(el("span","grip","⋮⋮"),el("div","seat"+(r.asiento?"":" none"),r.asiento?norm(r.asiento):"—"))}
       else{lead=el("div","prio");lead.setAttribute("aria-label","Prioridad "+(i+1)+", arrastra para mover");lead.append(el("span","grip","⋮⋮"),el("span","num",String(i+1)))}
-      const w=el("div","who");w.append(el("div","name",r.nombre));
+      const w=el("div","who"),nm=el("div","name",r.nombre);if((r.personas||1)>1)nm.append(el("span","pcount",r.personas+" pers."));w.append(nm);
       if(r.deParte)w.append(el("div","from","De parte de "+r.deParte));
       if(tab==="transportin"&&r.asiento)w.append(el("div","from","Asiento asignado: "+norm(r.asiento)));
       if(r.nota)w.append(el("div","note",r.nota));
@@ -375,19 +385,50 @@ function render(){
       sortables.push(Sortable.create(ul,{handle:".prio",animation:150,touchStartThreshold:4,
         onEnd:()=>{[...ul.children].forEach((li,idx)=>{const r=rows.find(x=>x.id===li.dataset.id);if(r)r.orden=idx+1});save();render()}}));
     }
-  });
+  }
 }
 
 /* Hora de salida -> instante. Mis vuelos: hora Z del CSV. Ajenos: hora peninsular española. */
 const madridDate=ms=>new Date(ms).toLocaleDateString("sv-SE",{timeZone:"Europe/Madrid"});
-function madridOffset(ms){const p={};new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Madrid",hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).formatToParts(ms).forEach(x=>p[x.type]=x.value);
-  return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)-Math.floor(ms/60000)*60000}
+const TZ_RAW={
+ "Europe/Madrid":"MAD BCN AGP ALC VLC SVQ BIO PMI IBZ MAH OVD SCQ VGO SDR ZAZ GRX XRY LEI REU VIT SLM VLL PNA LCG BJZ EAS RMU LEN GRO",
+ "Atlantic/Canary":"LPA TFN TFS ACE FUE SPC VDE GMZ",
+ "Europe/Lisbon":"LIS OPO FAO","Atlantic/Madeira":"FNC","Atlantic/Azores":"PDL",
+ "Europe/London":"LHR LGW LCY STN LTN MAN EDI GLA BHX BRS NCL LPL","Europe/Dublin":"DUB ORK SNN",
+ "Europe/Paris":"CDG ORY NCE LYS MRS TLS BOD NTE","Europe/Brussels":"BRU","Europe/Amsterdam":"AMS","Europe/Luxembourg":"LUX",
+ "Europe/Berlin":"FRA MUC BER DUS HAM STR CGN","Europe/Zurich":"ZRH GVA BSL","Europe/Vienna":"VIE",
+ "Europe/Rome":"FCO MXP LIN VCE NAP BLQ FLR CTA PMO BRI TRN","Europe/Malta":"MLA","Europe/Athens":"ATH SKG",
+ "Europe/Prague":"PRG","Europe/Budapest":"BUD","Europe/Warsaw":"WAW KRK","Europe/Bucharest":"OTP","Europe/Sofia":"SOF",
+ "Europe/Copenhagen":"CPH","Europe/Stockholm":"ARN","Europe/Oslo":"OSL","Europe/Helsinki":"HEL","Europe/Istanbul":"IST SAW",
+ "Africa/Casablanca":"CMN RAK TNG AGA","Africa/Algiers":"ALG ORN","Africa/Tunis":"TUN","Africa/Dakar":"DSS","Africa/Malabo":"SSG",
+ "Africa/Cairo":"CAI","Africa/Lagos":"LOS","Africa/Johannesburg":"JNB","Asia/Jerusalem":"TLV","Asia/Amman":"AMM",
+ "Asia/Dubai":"DXB AUH","Asia/Qatar":"DOH","Asia/Riyadh":"RUH JED","Asia/Tokyo":"NRT HND KIX","Asia/Seoul":"ICN",
+ "Asia/Shanghai":"PVG PEK","Asia/Hong_Kong":"HKG","Asia/Singapore":"SIN","Asia/Kolkata":"DEL BOM",
+ "America/New_York":"JFK EWR LGA BOS MIA FLL MCO TPA IAD DCA BWI ATL PHL CLT DTW","America/Chicago":"ORD DFW IAH MSP",
+ "America/Denver":"DEN","America/Phoenix":"PHX","America/Los_Angeles":"LAX SFO SEA LAS SAN","America/Toronto":"YYZ YUL YOW",
+ "America/Puerto_Rico":"SJU","America/Mexico_City":"MEX GDL MTY","America/Cancun":"CUN","America/Havana":"HAV",
+ "America/Santo_Domingo":"SDQ PUJ STI","America/Panama":"PTY","America/Costa_Rica":"SJO","America/Guatemala":"GUA",
+ "America/El_Salvador":"SAL","America/Managua":"MGA","America/Tegucigalpa":"SAP TGU","America/Bogota":"BOG MDE CLO CTG",
+ "America/Caracas":"CCS","America/Guayaquil":"GYE UIO","America/Lima":"LIM CUZ","America/La_Paz":"LPB VVI",
+ "America/Santiago":"SCL","America/Argentina/Buenos_Aires":"EZE AEP COR","America/Montevideo":"MVD","America/Asuncion":"ASU",
+ "America/Sao_Paulo":"GRU GIG CNF BSB","America/Recife":"REC","America/Fortaleza":"FOR","America/Bahia":"SSA"};
+const AIRPORT_TZ={};Object.entries(TZ_RAW).forEach(([z,l])=>l.split(" ").forEach(c=>AIRPORT_TZ[c]=z));
+const originOf=tray=>(fmtRoute(tray||"").match(/^[A-Z]{3}/)||[""])[0];
+const tzOf=tray=>AIRPORT_TZ[originOf(tray)]||"Europe/Madrid";
+function partsIn(ms,tz){const p={};new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).formatToParts(ms).forEach(x=>p[x.type]=x.value);
+  if(p.hour==="24")p.hour="00";return p}
+const dateIn=(ms,tz)=>{const p=partsIn(ms,tz);return p.year+"-"+p.month+"-"+p.day};
+const timeIn=(ms,tz)=>{const p=partsIn(ms,tz);return p.hour+":"+p.minute};
+function tzOffset(ms,tz){const p=partsIn(ms,tz);return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)-Math.floor(ms/60000)*60000}
+function zonedToUTC(fecha,hora,tz){const [y,m,d]=fecha.split("-").map(Number),[hh,mm]=hora.split(":").map(Number);const g=Date.UTC(y,m-1,d,hh,mm);let t=g-tzOffset(g,tz);return g-tzOffset(t,tz)}
+/* instante de salida a partir de la fecha de Madrid del CSV + hora Z */
+function utcFromMadridDateZ(fechaMad,salidaZ){const [y,m,d]=fechaMad.split("-").map(Number),[hh,mm]=salidaZ.split(":").map(Number);
+  let t=Date.UTC(y,m-1,d,hh,mm);if(dateIn(t,"Europe/Madrid")!==fechaMad)t-=86400000;return t}
 function depTime(fl){
   if(!fl||!fl.fecha)return null;
-  const [y,m,d]=fl.fecha.split("-").map(Number);
-  if(fl.salidaZ){const [hh,mm]=fl.salidaZ.split(":").map(Number);let t=Date.UTC(y,m-1,d,hh,mm);
-    if(madridDate(t)!==fl.fecha)t-=86400000; return t}
-  if(fl.hora){const [hh,mm]=fl.hora.split(":").map(Number);const g=Date.UTC(y,m-1,d,hh,mm);let t=g-madridOffset(g);t=g-madridOffset(t);return t}
+  if(fl.salidaUTC)return fl.salidaUTC;
+  if(fl.salidaZ)return utcFromMadridDateZ(fl.fecha,fl.salidaZ);
+  if(fl.hora)return zonedToUTC(fl.fecha,fl.hora,tzOf(fl.trayecto));
   return null;
 }
 function paintCd(c){
@@ -395,7 +436,7 @@ function paintCd(c){
   if(ms<=0){c.className="cd gone";c.textContent=ms>-20*3600000?"Ya ha salido":"Volado";return}
   const m=Math.floor(ms/60000), dd=Math.floor(m/1440), hh=Math.floor(m%1440/60), mi=m%60;
   c.className="cd"+(ms<86400000?" soon":"");c.textContent="";
-  [[dd,"Días"],[hh,"Hrs"],[mi,"Min"]].forEach(([v,l])=>{const t=el("div","tile");t.append(el("b",null,String(v).padStart(2,"0")),el("span",null,l));c.append(t)});
+  [[dd,"Días","big"],[hh,"Hrs",""],[mi,"Min",""]].forEach(([v,l,cls],i)=>{const t=el("div","tile "+cls);t.append(el("b",null,String(v).padStart(2,"0")),el("span",null,l));c.append(t);if(i===1)c.append(el("span","colon",":"))});
   c.append(el("span","ps","para salir"));
   c.setAttribute("aria-label",dd+" días, "+hh+" horas y "+mi+" minutos para salir");
 }
@@ -459,9 +500,12 @@ function openForm(r,preset){
   setKind(r?tipoOf(r):tab);
   $("iNombre").value=r?r.nombre:""; $("iAsiento").value=r?(r.asiento||""):"";
   $("iDeParte").value=r?(r.deParte||""):""; $("iNota").value=r?(r.nota||""):"";
+  $("iPersonas").value=r?(r.personas||1):1;
   $("form").hidden=false; window.scrollTo({top:0,behavior:"smooth"});
 }
 $("btnNew").onclick=()=>openForm(null);
+$("pMenos").onclick=()=>{$("iPersonas").value=Math.max(1,(parseInt($("iPersonas").value)||1)-1)};
+$("pMas").onclick=()=>{$("iPersonas").value=Math.min(20,(parseInt($("iPersonas").value)||1)+1)};
 function fillRoute(){const f=getFlight($("iFecha").value,$("iVuelo").value);$("iTrayecto").value=f&&f.trayecto?f.trayecto:""}
 $("iVuelo").addEventListener("change",fillRoute);$("iFecha").addEventListener("change",fillRoute);
 $("btnCancel").onclick=()=>{$("form").hidden=true;editing=null;stopMic()};
@@ -472,7 +516,7 @@ $("form").addEventListener("submit",e=>{
   if(!vuelo||!fecha||!nombre){$("formMsg").textContent="Faltan el vuelo, la fecha o el nombre.";return}
   const tray=fmtRoute($("iTrayecto").value), fl=getFlight(fecha,vuelo);
   if(tray&&(!fl||fl.trayecto!==tray))upsertFlight(fecha,vuelo,{trayecto:tray});
-  const data={tipo:kind,vuelo,fecha,nombre,asiento:norm($("iAsiento").value),deParte:$("iDeParte").value.trim(),nota:$("iNota").value.trim()};
+  const data={tipo:kind,vuelo,fecha,nombre,personas:Math.min(20,Math.max(1,parseInt($("iPersonas").value)||1)),asiento:norm($("iAsiento").value),deParte:$("iDeParte").value.trim(),nota:$("iNota").value.trim()};
   if(editing){
     const old=rows.find(r=>r.id===editing);
     if(tipoOf(old)!==kind||old.fecha!==fecha||fv(old.vuelo)!==vuelo)data.orden=nextOrden(fecha,vuelo,kind);
@@ -517,7 +561,7 @@ $("btnImportGo").onclick=()=>{
   let n=0;
   data.forEach(p=>{if(p&&p.trayecto&&p.vuelo&&p.fecha)upsertFlight(p.fecha,p.vuelo,{trayecto:fmtRoute(p.trayecto)});
     if(!p||!p.nombre)return;
-    const rec2={tipo:p.tipo==="transportin"?"transportin":"cuidar",vuelo:fv(p.vuelo),fecha:p.fecha||today(),nombre:String(p.nombre).trim(),
+    const rec2={tipo:p.tipo==="transportin"?"transportin":"cuidar",vuelo:fv(p.vuelo),fecha:p.fecha||today(),nombre:String(p.nombre).trim(),personas:Math.max(1,parseInt(p.personas)||1),
       asiento:norm(p.asiento),deParte:(p.deParte||"").trim(),nota:(p.nota||"").trim()};
     const ex=p.id&&rows.find(r=>r.id===p.id);
     if(ex){Object.assign(ex,rec2);if(p.orden!=null)ex.orden=p.orden;if(p.atendido!=null)ex.atendido=!!p.atendido}
@@ -550,8 +594,11 @@ function importSchedule(text){
   data.slice(1).forEach(r=>{
     const m=(r[iS]||"").match(re), d=(r[iD]||"").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
     if(!m||!d)return;
-    const fecha=d[3]+"-"+d[2].padStart(2,"0")+"-"+d[1].padStart(2,"0"), vuelo=fv(m[1]+m[2]);
-    const patch={ajeno:false,trayecto:m[3].toUpperCase()+"–"+m[5].toUpperCase(),salidaZ:m[4].slice(0,2)+":"+m[4].slice(2),llegadaZ:m[6].slice(0,2)+":"+m[6].slice(2),avion:m[7]?m[7].toUpperCase():""};
+    const fMad=d[3]+"-"+d[2].padStart(2,"0")+"-"+d[1].padStart(2,"0"), vuelo=fv(m[1]+m[2]);
+    const tray=m[3].toUpperCase()+"–"+m[5].toUpperCase(), salidaZ=m[4].slice(0,2)+":"+m[4].slice(2);
+    const t=utcFromMadridDateZ(fMad,salidaZ), tz=tzOf(tray), fecha=dateIn(t,tz);
+    if(fecha!==fMad&&getFlight(fMad,vuelo)&&!getFlight(fecha,vuelo))moveFlight(fMad,fecha,vuelo);
+    const patch={ajeno:false,trayecto:tray,salidaZ,salidaUTC:t,salidaLoc:timeIn(t,tz),llegadaZ:m[6].slice(0,2)+":"+m[6].slice(2),avion:m[7]?m[7].toUpperCase():""};
     if(getFlight(fecha,vuelo))act++;else nuevos++;
     upsertFlight(fecha,vuelo,patch);
   });
@@ -584,8 +631,8 @@ function cmteText(fecha,vuelo){
   let t="Hola"+(nom?" "+nom:"")+", ¿qué tal? Te escribo por tu vuelo "+vuelo+(fl.trayecto?" "+fmtRoute(fl.trayecto):"")+" del "+fmtDate(fecha)+(fl.hora?" a las "+fl.hora:"")+".";
   if(cu.length||tr.length){
     t+=" Te quería pedir un favor:\n";
-    if(cu.length){t+="\nQue cuides a:\n";cu.forEach(r=>{t+="• "+r.nombre+(r.asiento?" ("+norm(r.asiento)+")":"")+(r.nota?" — "+r.nota:"")+"\n"})}
-    if(tr.length){t+="\nSi fuera posible, transportín para:\n";tr.forEach((r,i)=>{t+=(tr.length>1?(i+1)+". ":"• ")+r.nombre+(r.nota?" — "+r.nota:"")+"\n"})}
+    if(cu.length){t+="\nQue cuides a:\n";cu.forEach(r=>{t+="• "+r.nombre+((r.personas||1)>1?" ("+r.personas+" pers.)":"")+(r.asiento?" ("+norm(r.asiento)+")":"")+(r.nota?" — "+r.nota:"")+"\n"})}
+    if(tr.length){t+="\nSi fuera posible, transportín para:\n";tr.forEach((r,i)=>{t+=(tr.length>1?(i+1)+". ":"• ")+r.nombre+((r.personas||1)>1?" ("+r.personas+" pers.)":"")+(r.nota?" — "+r.nota:"")+"\n"})}
     t+="\n¡Muchísimas gracias!";
   }
   return t;
@@ -634,7 +681,24 @@ $("tCuidar").onclick=()=>setTab("cuidar");$("tTrans").onclick=()=>setTab("transp
 function setFilter(f){filter=f;$("fUp").setAttribute("aria-pressed",f==="up");$("fAll").setAttribute("aria-pressed",f==="all");render()}
 $("fUp").onclick=()=>setFilter("up");$("fAll").onclick=()=>setFilter("all");
 
-load(); loadV(); render();
+function moveFlight(oldFecha,newFecha,vuelo){
+  const f=getFlight(oldFecha,vuelo);if(f){f.fecha=newFecha;f.id=fkey(newFecha,vuelo)}
+  rows.forEach(r=>{if(r.fecha===oldFecha&&fv(r.vuelo)===fv(vuelo))r.fecha=newFecha});
+}
+/* Repara claves y pasa los vuelos importados a fecha local del aeropuerto de salida */
+function repair(){
+  rows.forEach(r=>{r.vuelo=fv(r.vuelo);if(!r.personas||r.personas<1)r.personas=1});
+  const seen={};
+  flights.forEach(f=>{f.vuelo=fv(f.vuelo);
+    if(!f.ajeno&&f.salidaZ&&!f.salidaUTC){const t=utcFromMadridDateZ(f.fecha,f.salidaZ),tz=tzOf(f.trayecto),nf=dateIn(t,tz);
+      f.salidaUTC=t;f.salidaLoc=timeIn(t,tz);
+      if(nf!==f.fecha){rows.forEach(r=>{if(r.fecha===f.fecha&&r.vuelo===f.vuelo)r.fecha=nf});f.fecha=nf}}
+    f.id=fkey(f.fecha,f.vuelo);
+  });
+  flights=flights.filter(f=>{if(seen[f.id]){Object.assign(seen[f.id],{...f,...seen[f.id]});return false}seen[f.id]=f;return true});
+  save();saveV();
+}
+load(); loadV(); repair(); render();
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
