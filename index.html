@@ -17,7 +17,7 @@
 <style>
 :root{
   --bg:#eef0f3; --card:#ffffff; --ink:#14213a; --muted:#5d6779; --line:#d6dbe3;
-  --accent:#c8102e; --accent-soft:#fbe7ea; --ok:#1f7a4d; --ok-soft:#e3f3ea; --amber:#9a5b00; --amber-soft:#fdf0d9; --tile:#ffffff; --tile-low:#eceef2; --tile-ink:#111418; --tile-line:#b9bfc9;
+  --accent:#c8102e; --accent-soft:#fbe7ea; --on-accent:#ffffff; --alert:#c8102e; --alert-soft:#fbe7ea; --ok:#1f7a4d; --ok-soft:#e3f3ea; --amber:#9a5b00; --amber-soft:#fdf0d9; --tile:#ffffff; --tile-low:#eceef2; --tile-ink:#111418; --tile-line:#b9bfc9;
   --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -25,7 +25,17 @@
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#0e1420; --card:#172033; --ink:#e7ebf2; --muted:#9aa4b6; --line:#2a3550;
-  --accent:#ff5468; --accent-soft:#3a1c25; --ok:#5fd19a; --ok-soft:#173527; --amber:#f2b552; --amber-soft:#3a2c14; --tile:#2a354f; --tile-low:#222b41; --tile-ink:#f2f4f8; --tile-line:#0e1420; color-scheme:dark}}
+  --accent:#ff5468; --accent-soft:#3a1c25; --on-accent:#ffffff; --alert:#ff5468; --alert-soft:#3a1c25; --ok:#5fd19a; --ok-soft:#173527; --amber:#f2b552; --amber-soft:#3a2c14; --tile:#2a354f; --tile-low:#222b41; --tile-ink:#f2f4f8; --tile-line:#0e1420; color-scheme:dark}}
+
+/* Temas: cada uno redefine solo colores, en claro y en oscuro */
+:root[data-tema="enchufe"]{--bg:#edf3ee;--card:#ffffff;--ink:#12301f;--muted:#56705f;--line:#d2e0d5;--accent:#1c8f45;--accent-soft:#e0f3e6;--on-accent:#ffffff;--ok:#0f7c8a;--ok-soft:#ddf1f3;--tile-low:#e9f0eb}
+:root[data-tema="atardecer"]{--bg:#f6efea;--card:#fffaf6;--ink:#3a1d3a;--muted:#7a6070;--line:#e8d9d0;--accent:#d9561a;--accent-soft:#fde5d6;--on-accent:#ffffff;--tile-low:#f3ebe5}
+:root[data-tema="oceano"]{--bg:#e9f2f5;--card:#ffffff;--ink:#0d2c3a;--muted:#557482;--line:#cfe0e6;--accent:#0a7c9c;--accent-soft:#d9eef5;--on-accent:#ffffff;--tile-low:#e6eff2}
+@media (prefers-color-scheme:dark){
+:root[data-tema="enchufe"]{--bg:#0c1a12;--card:#142a1d;--ink:#e3f2e8;--muted:#93b3a0;--line:#244233;--accent:#55d681;--accent-soft:#173b25;--on-accent:#06210f;--ok:#4cc7d6;--ok-soft:#12343a;--tile:#1d3a28;--tile-low:#183121;--tile-line:#0c1a12}
+:root[data-tema="atardecer"]{--bg:#1c1020;--card:#2a1a2e;--ink:#f5e9f0;--muted:#b9a0b2;--line:#3f2a45;--accent:#ff8a4c;--accent-soft:#44241f;--on-accent:#2a1206;--tile:#3a2640;--tile-low:#311f36;--tile-line:#1c1020}
+:root[data-tema="oceano"]{--bg:#071a22;--card:#0f2a35;--ink:#e2f3f8;--muted:#8fb2bf;--line:#1d4250;--accent:#3cc4e6;--accent-soft:#0f3a48;--on-accent:#04222c;--tile:#163846;--tile-low:#12303c;--tile-line:#071a22}
+}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -37,10 +47,18 @@ h1{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1;let
 h1 span{color:var(--accent)}
 .sub{color:var(--muted);font-size:13px;margin-top:4px}
 button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-weight:600}
+.btn{background:var(--accent);color:var(--on-accent);border:0;border-radius:8px;padding:10px 16px;font-weight:600}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
 .btn:disabled{opacity:.5}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:44px;height:44px;border-radius:11px;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.temas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tema{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px 12px;font-weight:600;font-size:15px}
+.tema small{font-weight:400;font-size:12px;color:var(--muted)}
+.tema .sw{display:flex;margin-bottom:4px}
+.tema .sw i{width:22px;height:22px;border-radius:50%;border:2px solid var(--card);margin-right:-6px}
+.tema[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
 .summary{display:flex;gap:8px;flex-wrap:wrap}
 .summary span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:13px;color:var(--muted)}
 .summary b{font-family:var(--f-mono);color:var(--ink)}
@@ -68,7 +86,7 @@ input,textarea{font:inherit;font-size:16px;text-transform:none;letter-spacing:0;
 textarea{resize:vertical;min-height:60px}
 .mic{flex:none;width:42px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;display:grid;place-items:center}
 .mic svg{width:18px;height:18px}
-.mic.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.mic.on{background:var(--alert);border-color:var(--alert);color:#fff}
 .stepbtn{flex:none;width:42px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;font-size:20px;font-weight:600}
 .pcount{display:inline-block;margin-left:6px;padding:0 7px;border-radius:99px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:600;vertical-align:2px}
 .helpbtn{width:42px;padding:10px 0;font-family:var(--f-display);font-size:20px;font-weight:700;line-height:1}
@@ -91,9 +109,9 @@ textarea{resize:vertical;min-height:60px}
 #help .hc b{font-weight:600}
 #help .kb{font-family:var(--f-mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:0 5px;white-space:nowrap}
 #help .tip{background:var(--bg);border-left:4px solid var(--ink);border-radius:0 8px 8px 0;padding:8px 12px;margin:0 0 10px;font-size:14px}
-#help .tip.warn{border-color:var(--accent);background:var(--accent-soft)}
+#help .tip.warn{border-color:var(--alert);background:var(--alert-soft)}
 #help .tip.ok{border-color:var(--ok);background:var(--ok-soft)}
-#help .gr{color:var(--ok);font-weight:700}#help .am{color:var(--amber);font-weight:700}#help .rd{color:var(--accent);font-weight:700}
+#help .gr{color:var(--ok);font-weight:700}#help .am{color:var(--amber);font-weight:700}#help .rd{color:var(--alert);font-weight:700}
 .empty .link{display:inline-block;margin-top:8px;font-size:14px;color:var(--accent)}
 .actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .msg{grid-column:1/-1;font-size:13px;color:var(--amber);margin:0}
@@ -104,11 +122,11 @@ textarea{resize:vertical;min-height:60px}
 .froute.add{font-family:var(--f-body);font-size:12px;font-weight:600;text-decoration:underline;letter-spacing:0}
 .frinput{width:110px;font-size:16px;padding:4px 8px;text-transform:uppercase}
 .ftime{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
-.flight.ajeno{border:2px solid var(--accent)}
-.ajenoTag{background:var(--accent);color:#fff;font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;padding:5px 16px}
-.cmte{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:10px 16px;background:var(--accent-soft);border-bottom:1px dashed var(--line)}
+.flight.ajeno{border:2px solid var(--alert)}
+.ajenoTag{background:var(--alert);color:#fff;font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;padding:5px 16px}
+.cmte{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;padding:10px 16px;background:var(--alert-soft);border-bottom:1px dashed var(--line)}
 .cmte .who{flex:1 1 160px}
-.cmte .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700}
+.cmte .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--alert);font-weight:700}
 .cmte .nm{font-weight:600;overflow-wrap:anywhere}
 .cmte .tl{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 .cmte .acts{display:flex;gap:8px}
@@ -119,15 +137,15 @@ textarea{resize:vertical;min-height:60px}
 .fcol{display:flex;flex-direction:column;gap:3px}
 .cd{display:flex;align-items:flex-end;gap:5px;margin-top:4px}
 .cd .colon{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1;color:var(--tile-ink);margin:0 -1px 17px}
-.cd.soon .colon{color:var(--accent)}
+.cd.soon .colon{color:var(--alert)}
 .tile.big{margin-right:4px}
 .tile.big b{font-size:33px;min-width:46px;padding:4px 5px 3px}
 .tile{display:flex;flex-direction:column;align-items:center;gap:2px}
 .tile b{position:relative;display:block;min-width:34px;padding:3px 4px 2px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:25px;line-height:1;font-variant-numeric:tabular-nums;color:var(--tile-ink);background:linear-gradient(to bottom,var(--tile) 0 49%,var(--tile-line) 49% 52%,var(--tile-low) 52%);border:1px solid var(--line);border-radius:5px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .tile span{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .cd .ps{margin-bottom:19px;margin-left:4px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.cd.soon .tile b{background:linear-gradient(to bottom,var(--accent) 0 49.5%,rgba(0,0,0,.1) 49.5% 51%,var(--accent) 51%);color:#fff;border-color:var(--accent)}
-.cd.soon .ps{color:var(--accent)}
+.cd.soon .tile b{background:linear-gradient(to bottom,var(--alert) 0 49.5%,rgba(0,0,0,.1) 49.5% 51%,var(--alert) 51%);color:#fff;border-color:var(--alert)}
+.cd.soon .ps{color:var(--alert)}
 .cd.gone{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-top:2px}
 .recs{border-bottom:1px dashed var(--line);padding:10px 16px 12px;display:flex;flex-direction:column;gap:8px;background:var(--amber-soft)}
 .recs h3{margin:0;font-family:var(--f-display);font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber)}
@@ -142,7 +160,7 @@ textarea{resize:vertical;min-height:60px}
 .reclist .rchk{width:28px;height:28px;border-radius:6px;border:2px solid var(--line);background:transparent;color:transparent;font-weight:700;display:grid;place-items:center}
 .reclist .rchk[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
 .reclist .rdel{background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;padding:0}
-.reclist .rdel.arm{color:var(--accent)}
+.reclist .rdel.arm{color:var(--alert)}
 .recs .addrec{align-self:flex-start;border:1px dashed var(--amber);background:transparent;color:var(--amber);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600}
 .link.recbtn{color:var(--amber);font-weight:600}
 .nopax{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;color:var(--muted);font-size:14px}
@@ -170,7 +188,7 @@ textarea{resize:vertical;min-height:60px}
 .note{font-size:14px;margin-top:4px;overflow-wrap:anywhere}
 .row-actions{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
 .link{background:none;border:0;padding:0;color:var(--muted);font-size:12px;text-decoration:underline}
-.link.danger{color:var(--accent)}
+.link.danger{color:var(--alert)}
 .chk{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:transparent;color:transparent;display:grid;place-items:center;font-size:18px;font-weight:700}
 .chk[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
 li.attended .name{text-decoration:line-through;text-decoration-color:var(--muted)}
@@ -186,12 +204,24 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
 <body>
 <div class="wrap">
   <header>
-    <div>
+    <div class="brand"><img src="icon-192.png" alt="" class="logo" width="44" height="44"><div>
       <h1>Recomendados <span>a bordo</span></h1>
       <div class="sub">Pasajeros que te han encargado, vuelo a vuelo.</div>
-    </div>
-    <div style="display:flex;gap:8px"><button class="btn ghost helpbtn" id="btnHelp" type="button" aria-label="Ayuda">?</button><button class="btn ghost" id="btnNewFlight" type="button">+ Vuelo</button><button class="btn" id="btnNew" type="button">+ Añadir</button></div>
+    </div></div>
+    <div style="display:flex;gap:8px"><button class="btn ghost helpbtn" id="btnTema" type="button" aria-label="Cambiar colores"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.9 1.4-1.8-.3-.8-.1-1.7.7-2.1.4-.2.9-.2 1.4-.2H18a3 3 0 0 0 3-3c0-5-4-8.9-9-8.9z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10.5" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></svg></button><button class="btn ghost helpbtn" id="btnHelp" type="button" aria-label="Ayuda">?</button><button class="btn ghost" id="btnNewFlight" type="button">+ Vuelo</button><button class="btn" id="btnNew" type="button">+ Añadir</button></div>
   </header>
+
+  <div class="panel" id="temaPanel" hidden>
+    <h2>Colores de la app</h2>
+    <div class="temas full" role="radiogroup" aria-label="Tema">
+      <button type="button" class="tema" data-t="" role="radio"><span class="sw"><i style="background:#14213a"></i><i style="background:#c8102e"></i><i style="background:#eef0f3"></i></span>Clásico<small>Azul noche y rojo</small></button>
+      <button type="button" class="tema" data-t="enchufe" role="radio"><span class="sw"><i style="background:#12301f"></i><i style="background:#1c8f45"></i><i style="background:#edf3ee"></i></span>Enchufe<small>Verdes, como el logo</small></button>
+      <button type="button" class="tema" data-t="atardecer" role="radio"><span class="sw"><i style="background:#3a1d3a"></i><i style="background:#d9561a"></i><i style="background:#f6efea"></i></span>Atardecer<small>Ciruela y naranja</small></button>
+      <button type="button" class="tema" data-t="oceano" role="radio"><span class="sw"><i style="background:#0d2c3a"></i><i style="background:#0a7c9c"></i><i style="background:#e9f2f5"></i></span>Océano<small>Petróleo y turquesa</small></button>
+    </div>
+    <p class="full sub" style="margin:0">El modo claro u oscuro sigue al del móvil. «No es mi vuelo» y los avisos urgentes siempre van en rojo.</p>
+    <div class="actions"><button type="button" class="btn" id="btnTemaOk">Hecho</button></div>
+  </div>
 
   <div class="summary"><span><b id="nCuidar">0</b> a cuidar</span><span><b id="nTrans">0</b> pers. en transportín</span></div>
 
@@ -292,6 +322,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
         <li>Cada vuelo tiene dos listas: <span class="gr">A CUIDAR</span> y <span class="am">TRANSPORTINES</span>.</li>
         <li><span class="kb">Próximos</span> muestra de hoy en adelante; <span class="kb">Todos</span> incluye los vuelos pasados.</li>
         <li>Si falta el trayecto, toca <span class="kb">+ trayecto</span> en la tarjeta.</li>
+        <li>El botón de la <b>paleta</b>, arriba, cambia los colores de la app: Clásico, Enchufe, Atardecer u Océano.</li>
       </ul>
     </div></details>
 
@@ -838,6 +869,17 @@ function closeHelp(fromPop){const h=$("help");if(h.hidden)return;h.hidden=true;d
 $("btnHelp").onclick=openHelp;$("btnHelp2").onclick=openHelp;$("btnHelpClose").onclick=()=>closeHelp(false);
 window.addEventListener("popstate",()=>closeHelp(true));
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeHelp(false)});
+const KEYT="recomendados.tema";
+function applyTema(t){
+  if(t)document.documentElement.dataset.tema=t;else delete document.documentElement.dataset.tema;
+  document.querySelectorAll(".tema").forEach(b=>b.setAttribute("aria-checked",b.dataset.t===(t||"")?"true":"false"));
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()||"#14213a";
+}
+try{applyTema(localStorage.getItem(KEYT)||"")}catch(e){applyTema("")}
+document.querySelectorAll(".tema").forEach(b=>b.onclick=()=>{applyTema(b.dataset.t);try{localStorage.setItem(KEYT,b.dataset.t)}catch(e){}});
+$("btnTema").onclick=()=>{const tp=$("temaPanel");tp.hidden=!tp.hidden;if(!tp.hidden){$("form").hidden=true;$("flightForm").hidden=true;$("importPanel").hidden=true;window.scrollTo({top:0,behavior:"smooth"})}};
+$("btnTemaOk").onclick=()=>{$("temaPanel").hidden=true};
+if(window.matchMedia)matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>applyTema(document.documentElement.dataset.tema||""));
 load(); loadV(); repair(); render();
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
