@@ -81,6 +81,11 @@ textarea{resize:vertical;min-height:60px}
 .cmte .wa{background:#1f9d55;color:#fff}
 .cmte .call{border:1px solid var(--line);background:var(--card);color:var(--ink)}
 .fbar{display:flex;justify-content:flex-end;gap:16px;padding:8px 16px;border-bottom:1px dashed var(--line)}
+.fcol{display:flex;flex-direction:column;gap:3px}
+.cd{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ink);letter-spacing:.02em}
+.cd small{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-left:4px}
+.cd.soon{color:var(--accent);font-weight:600}
+.cd.gone{color:var(--muted)}
 .nopax{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;color:var(--muted);font-size:14px}
 .nopax .btn{padding:8px 12px;font-size:14px}
 #list{display:flex;flex-direction:column;gap:12px}
@@ -171,7 +176,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <label>Vuelo<input id="fVuelo" placeholder="IB 3166" autocomplete="off"></label>
     <label>Fecha<input id="fFecha" type="date"></label>
     <label>Trayecto<input id="fTrayecto" placeholder="MAD-BCN" autocomplete="off" autocapitalize="characters"></label>
-    <label>Hora de salida<input id="fHora" type="time"></label>
+    <label>Hora de salida (España)<input id="fHora" type="time"></label>
     <div class="full" id="cmteFields" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <label>Comandante<span class="field"><input id="fCmte" placeholder="Nombre del comandante" autocomplete="off"><button type="button" class="mic" data-for="fCmte" aria-label="Dictar comandante"></button></span></label>
       <label>Teléfono<input id="fTel" type="tel" inputmode="tel" placeholder="600 123 456" autocomplete="off"></label>
@@ -275,7 +280,9 @@ function render(){
     const fl=getFlight(fecha,vuelo);
     const sec=el("section","flight"+(fl&&fl.ajeno?" ajeno":"")), h=el("div","fhead");
     if(fl&&fl.ajeno)sec.append(el("div","ajenoTag","No es mi vuelo"));
-    h.append(el("div","fcode",vuelo),routeEl(fecha,vuelo,fl),el("div","fdate",fmtDate(fecha)));
+    const fc=el("div","fcol");fc.append(el("div","fcode",vuelo));
+    const dep=depTime(fl);if(dep){const cd=el("div","cd");cd.dataset.t=dep;fc.append(cd);paintCd(cd)}
+    h.append(fc,routeEl(fecha,vuelo,fl),el("div","fdate",fmtDate(fecha)));
     if(fl&&fl.salidaZ)h.append(el("span","ftime",fl.salidaZ+"Z"+(fl.avion?" · "+fl.avion:"")));
     else if(fl&&fl.hora)h.append(el("span","ftime","Sale "+fl.hora));
     if(!g.length)h.append(el("div","count zero","Sin recomendados"));
@@ -344,6 +351,29 @@ function render(){
   });
 }
 
+/* Hora de salida -> instante. Mis vuelos: hora Z del CSV. Ajenos: hora peninsular española. */
+const madridDate=ms=>new Date(ms).toLocaleDateString("sv-SE",{timeZone:"Europe/Madrid"});
+function madridOffset(ms){const p={};new Intl.DateTimeFormat("en-US",{timeZone:"Europe/Madrid",hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).formatToParts(ms).forEach(x=>p[x.type]=x.value);
+  return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)-Math.floor(ms/60000)*60000}
+function depTime(fl){
+  if(!fl||!fl.fecha)return null;
+  const [y,m,d]=fl.fecha.split("-").map(Number);
+  if(fl.salidaZ){const [hh,mm]=fl.salidaZ.split(":").map(Number);let t=Date.UTC(y,m-1,d,hh,mm);
+    if(madridDate(t)!==fl.fecha)t-=86400000; return t}
+  if(fl.hora){const [hh,mm]=fl.hora.split(":").map(Number);const g=Date.UTC(y,m-1,d,hh,mm);let t=g-madridOffset(g);t=g-madridOffset(t);return t}
+  return null;
+}
+function paintCd(c){
+  const ms=+c.dataset.t-Date.now();
+  if(ms<=0){c.className="cd gone";c.textContent=ms>-20*3600000?"Ya ha salido":"Volado";return}
+  const m=Math.floor(ms/60000), dd=Math.floor(m/1440), hh=Math.floor(m%1440/60), mi=m%60;
+  c.className="cd"+(ms<86400000?" soon":"");
+  c.textContent=String(dd).padStart(2,"0")+","+String(hh).padStart(2,"0")+":"+String(mi).padStart(2,"0");
+  const sm=el("small",null,"para salir");c.append(sm);
+  c.setAttribute("aria-label",dd+" días, "+hh+" horas y "+mi+" minutos para la salida");
+}
+setInterval(()=>document.querySelectorAll(".cd[data-t]").forEach(paintCd),20000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)document.querySelectorAll(".cd[data-t]").forEach(paintCd)});
 function routeEl(fecha,vuelo,fl){
   const b=el("button","froute"+(fl&&fl.trayecto?"":" add"),fl&&fl.trayecto?fmtRoute(fl.trayecto):"+ trayecto");b.type="button";
   b.setAttribute("aria-label","Editar trayecto");
