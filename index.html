@@ -124,6 +124,7 @@ textarea{resize:vertical;min-height:60px}
 .fend::before,.fend::after{content:"";flex:1;height:1px;background:var(--line)}
 .fsep{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:-14px}
 .fsep::after{content:"";flex:1;height:2px;background:var(--line);border-radius:2px}
+.flight .panel{margin:10px;border-width:2px;border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.14)}
 .fbanner{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:10px 14px;border-radius:10px;background:var(--ink);color:var(--bg)}
 .fbanner .bl{width:100%;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
 .fbanner .bv{font-family:var(--f-display);font-weight:700;font-size:26px;line-height:1}
@@ -235,7 +236,6 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <button type="button" class="tema" data-t="oceano" role="radio"><span class="sw"><i style="background:#0d2c3a"></i><i style="background:#0a7c9c"></i><i style="background:#e9f2f5"></i></span>Océano<small>Petróleo y turquesa</small></button>
     </div>
     <p class="full sub" style="margin:0">Noche es siempre oscuro. Los demás se ponen claros u oscuros según el ajuste del móvil. Los avisos urgentes van siempre en rojo.</p>
-    <div class="actions"><button type="button" class="btn" id="btnTemaOk">Hecho</button></div>
   </div>
 
   <div class="summary"><span><b id="nCuidar">0</b> a cuidar</span><span><b id="nTrans">0</b> pers. en transportín</span></div>
@@ -248,6 +248,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <span class="hint" id="hint">Arrastra desde ⋮⋮ para cambiar el orden</span>
   </div>
 
+  <div id="formsHome" style="display:contents">
   <form class="panel" id="form" hidden>
     <h2 id="formTitle">Nuevo recomendado</h2>
     <div class="fbanner" id="fBanner" aria-live="polite"></div>
@@ -292,6 +293,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <button type="submit" class="btn" id="btnFfSave">Guardar vuelo</button>
     </div>
   </form>
+  </div>
 
   <div class="panel" id="importPanel" hidden>
     <h2>Importar lista</h2>
@@ -350,7 +352,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     </div></details>
 
     <details><summary><span class="hn">4</span>Añadir recomendados</summary><div class="hc">
-      <p>Toca <span class="kb">+ Añadir</span> en la franja verde (cuidar) o amarilla (transportín) del vuelo. El vuelo y la fecha ya vienen puestos.</p>
+      <p>Toca <span class="kb">+ Añadir</span> en la franja verde (cuidar) o amarilla (transportín) del vuelo. El formulario se abre ahí mismo, dentro del vuelo, con el vuelo y la fecha ya puestos y una banda que te recuerda a qué vuelo vas a añadir.</p>
       <ul>
         <li><b>Personas</b>: para familias o grupos, con − y +. Sale como «4 pers.» y suma en los totales.</li>
         <li><b>Asiento</b>: déjalo vacío si aún no lo sabes.</li>
@@ -458,6 +460,7 @@ function flightText(fecha,vuelo){
 
 function render(){
   sortables.forEach(s=>s.destroy());sortables=[];
+  parkForms();
   const t=today(), list=$("list"); list.textContent="";
   const upcoming=rows.filter(r=>filter==="all"||(r.fecha||"")>=t);
   $("nCuidar").textContent=upcoming.filter(r=>tipoOf(r)==="cuidar").length;
@@ -475,6 +478,27 @@ function render(){
     list.append(e);return;
   }
   Object.keys(groups).sort((a,b)=>filter==="all"?b.localeCompare(a):a.localeCompare(b)).forEach(k=>{try{renderFlight(k,groups[k],list)}catch(err){console.error(err)}});
+  placeForms(false);
+}
+/* Los formularios se abren dentro de la tarjeta donde se pulsa */
+const anchors={form:null,flightForm:null};
+function parkForms(){const h=$("formsHome");h.append($("form"),$("flightForm"))}
+function placeForms(scroll){
+  ["form","flightForm"].forEach(id=>{
+    const f=$(id), a=anchors[id];
+    if(f.hidden)return;
+    let target=null, where="after";
+    const card=a&&document.querySelector('.flight[data-key="'+a.key+'"]');
+    if(card){
+      if(a.flight)target=card.querySelector(".fbar");
+      else{const ps=card.querySelector(".psec."+(a.tipo==="transportin"?"tr":"cu"));
+        if(ps){target=a.edit?ps:ps.querySelector("h4");if(a.edit)where="append"}
+        else target=card.querySelector(".nopax")}
+    }
+    if(!target){$("formsHome").append(f);if(scroll)window.scrollTo({top:0,behavior:"smooth"});return}
+    if(where==="append")target.append(f);else target.after(f);
+    if(scroll)requestAnimationFrame(()=>f.scrollIntoView({behavior:"smooth",block:"nearest"}));
+  });
 }
 function renderFlight(k,g,list){
   const [fecha,vuelo]=k.split("|");
@@ -685,7 +709,9 @@ function openForm(r,preset){
   $("iNombre").value=r?r.nombre:""; $("iAsiento").value=r?(r.asiento||""):"";
   $("iDeParte").value=r?(r.deParte||""):""; $("iNota").value=r?(r.nota||""):"";
   $("iPersonas").value=r?(r.personas||1):1;
-  $("form").hidden=false; window.scrollTo({top:0,behavior:"smooth"});
+  anchors.form=r?{key:fkey(r.fecha,r.vuelo),tipo:tipoOf(r),edit:true}:preset?{key:fkey(preset.fecha,preset.vuelo),tipo:(preset.tipo||"cuidar")}:null;
+  $("flightForm").hidden=true;$("temaPanel").hidden=true;
+  $("form").hidden=false; placeForms(true); $("iNombre").focus({preventScroll:true});
 }
 
 $("pMenos").onclick=()=>{$("iPersonas").value=Math.max(1,(parseInt($("iPersonas").value)||1)-1)};
@@ -701,7 +727,7 @@ function paintBanner(){
 ["iVuelo","iFecha","iTrayecto"].forEach(id=>$(id).addEventListener("input",paintBanner));
 function fillRoute(){const f=getFlight($("iFecha").value,$("iVuelo").value);$("iTrayecto").value=f&&f.trayecto?f.trayecto:"";paintBanner()}
 $("iVuelo").addEventListener("change",fillRoute);$("iFecha").addEventListener("change",fillRoute);
-$("btnCancel").onclick=()=>{$("form").hidden=true;editing=null;stopMic()};
+$("btnCancel").onclick=()=>{$("form").hidden=true;editing=null;stopMic();parkForms()};
 
 $("form").addEventListener("submit",e=>{
   e.preventDefault(); stopMic();
@@ -716,11 +742,14 @@ $("form").addEventListener("submit",e=>{
     Object.assign(old,data);
   } else {
     data.orden=nextOrden(fecha,vuelo,kind);
-    rows.push({id:uid(),...data,atendido:false,creado:Date.now()});
+    data.id=uid();rows.push({...data,atendido:false,creado:Date.now()});
   }
+  const savedId=editing||data.id;
   save(); $("form").hidden=true; editing=null; setTab(kind);
   if(fecha<today()&&filter==="up")setFilter("all");
-  requestAnimationFrame(()=>{const c=document.querySelector('.flight[data-key="'+fkey(fecha,vuelo)+'"]');if(c){c.scrollIntoView({behavior:"smooth",block:"start"});c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),1700)}});
+  requestAnimationFrame(()=>{const c=document.querySelector('.flight[data-key="'+fkey(fecha,vuelo)+'"]');if(!c)return;
+    const li=c.querySelector('li[data-id="'+savedId+'"]');(li||c).scrollIntoView({behavior:"smooth",block:"nearest"});
+    c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),1700)});
 });
 
 /* Dictado: micro del navegador si está disponible; si no, se ocultan los botones y vale el micro del teclado */
@@ -846,10 +875,12 @@ function openFlightForm(fecha,vuelo){
   setAjeno(fecha?!!(fl&&fl.ajeno):true);
   const hasPax=fecha&&rows.some(r=>r.fecha===fecha&&fv(r.vuelo)===fv(vuelo));
   $("btnFfDel").hidden=!fl||hasPax;$("btnFfDel").textContent="Quitar vuelo";
-  $("flightForm").hidden=false;window.scrollTo({top:0,behavior:"smooth"});
+  anchors.flightForm=fecha?{key:fkey(fecha,vuelo),flight:true}:null;
+  $("temaPanel").hidden=true;
+  $("flightForm").hidden=false;placeForms(true);
 }
 $("btnNewFlight").onclick=()=>openFlightForm();
-$("btnFfCancel").onclick=()=>{$("flightForm").hidden=true;stopMic()};
+$("btnFfCancel").onclick=()=>{$("flightForm").hidden=true;stopMic();parkForms()};
 $("btnFfDel").onclick=()=>{
   if($("btnFfDel").textContent==="Quitar vuelo"){$("btnFfDel").textContent="¿Seguro? Toca otra vez";return}
   flights=flights.filter(f=>f.id!==ffKey);saveV();$("flightForm").hidden=true;render();
@@ -907,9 +938,9 @@ function applyTema(t){
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue("--bg").trim()||"#14213a";
 }
 try{applyTema(localStorage.getItem(KEYT)||"")}catch(e){applyTema("")}
-document.querySelectorAll(".tema").forEach(b=>b.onclick=()=>{applyTema(b.dataset.t);try{localStorage.setItem(KEYT,b.dataset.t)}catch(e){}});
+document.querySelectorAll(".tema").forEach(b=>b.onclick=()=>{applyTema(b.dataset.t);try{localStorage.setItem(KEYT,b.dataset.t)}catch(e){}setTimeout(()=>{$("temaPanel").hidden=true},250)});
 $("btnTema").onclick=()=>{const tp=$("temaPanel");tp.hidden=!tp.hidden;if(!tp.hidden){$("form").hidden=true;$("flightForm").hidden=true;$("importPanel").hidden=true;window.scrollTo({top:0,behavior:"smooth"})}};
-$("btnTemaOk").onclick=()=>{$("temaPanel").hidden=true};
+
 if(window.matchMedia)matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>applyTema(document.documentElement.dataset.tema||""));
 load(); loadV(); repair(); render();
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
