@@ -1,5 +1,5 @@
 // Cambia el número de versión cada vez que subas cambios, para que el móvil coja la nueva.
-const CACHE = "recomendados-v7";
+const CACHE = "recomendados-v8";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "Sortable.min.js", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
