@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Recomendados a bordo</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Recomendados">
@@ -219,7 +219,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><img src="icon-192.png" alt="" class="logo" width="44" height="44"><div>
+    <div class="brand"><img src="icon-192.png?v=2" alt="" class="logo" width="44" height="44"><div>
       <h1>Recomendados <span>a bordo</span></h1>
       <div class="sub">Pasajeros que te han encargado, vuelo a vuelo.</div>
     </div></div>
@@ -303,6 +303,18 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <div class="actions">
       <button type="button" class="btn ghost" id="btnImportCancel">Cerrar</button>
       <button type="button" class="btn" id="btnImportGo">Importar</button>
+    </div>
+  </div>
+
+  <div class="panel" id="restorePanel" hidden>
+    <h2>Restaurar copia</h2>
+    <p class="full sub" style="margin:0">Sustituye todo lo que hay en la app por lo de la copia. Elige el archivo o pega su contenido (por ejemplo, si te lo han mandado por mensaje).</p>
+    <div class="actions" style="justify-content:flex-start"><button type="button" class="btn ghost" id="btnRestoreFile">Elegir archivo</button></div>
+    <textarea class="full" id="iRestore" style="min-height:140px" placeholder='{"pax":[…],"vuelos":[…]}'></textarea>
+    <p class="msg" id="restoreMsg"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="btnRestoreCancel">Cerrar</button>
+      <button type="button" class="btn" id="btnRestoreGo">Restaurar lo pegado</button>
     </div>
   </div>
 
@@ -398,7 +410,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <p class="tip warn">Se pierde todo si borras el icono de la app (en iPhone), si pierdes o cambias de móvil o si borras los datos del navegador. Haz copia de vez en cuando y siempre antes de quitar el icono.</p>
       <ul>
         <li><b>Hacer copia</b>: <span class="kb">Copia de seguridad</span>, abajo del todo. Guárdala o mándatela.</li>
-        <li><b>Recuperar</b>: <span class="kb">Restaurar copia</span> y elige el archivo (desde Archivos, iCloud o donde lo guardaras). Sustituye todo lo que haya en la app por lo de la copia.</li>
+        <li><b>Recuperar</b>: <span class="kb">Restaurar copia</span> y, o bien <b>Elegir archivo</b> (desde Archivos, iCloud o donde lo guardaras), o bien pega el contenido de la copia en el recuadro y <b>Restaurar lo pegado</b> (útil si te la han mandado por mensaje). Sustituye todo lo que haya en la app por lo de la copia.</li>
       </ul>
     </div></details>
 
@@ -704,7 +716,7 @@ function setKind(k){kind=k;$("kCuidar").setAttribute("aria-pressed",k==="cuidar"
 $("kCuidar").onclick=()=>setKind("cuidar");$("kTrans").onclick=()=>setKind("transportin");
 
 function openForm(r,preset){
-  editing=r?r.id:null; pendingDelete=null; $("importPanel").hidden=true; $("flightForm").hidden=true;
+  editing=r?r.id:null; pendingDelete=null; $("importPanel").hidden=true;$("restorePanel").hidden=true; $("flightForm").hidden=true;
   $("formTitle").textContent=r?"Editar recomendado":"Nuevo recomendado"; $("formMsg").textContent="";
   const next=rows.filter(x=>(x.fecha||"")>=today()).sort((a,b)=>a.fecha.localeCompare(b.fecha))[0];
   const nextF=flights.filter(x=>(x.fecha||"")>=today()).sort((a,b)=>a.fecha.localeCompare(b.fecha))[0];
@@ -782,7 +794,7 @@ function bindMic(b){
 }
 
 /* Importar lista preparada por Claude y copia de seguridad */
-$("btnImport").onclick=()=>{$("form").hidden=true;$("importPanel").hidden=false;$("importMsg").textContent="";$("iImport").value="";window.scrollTo({top:0,behavior:"smooth"})};
+$("btnImport").onclick=()=>{$("form").hidden=true;$("importPanel").hidden=false;$("restorePanel").hidden=true;$("importMsg").textContent="";$("iImport").value="";window.scrollTo({top:0,behavior:"smooth"})};
 $("btnImportCancel").onclick=()=>{$("importPanel").hidden=true};
 $("btnImportGo").onclick=()=>{
   let data;try{data=JSON.parse($("iImport").value.trim())}catch(e){$("importMsg").textContent="No es un bloque válido. Copia el bloque entero, desde [ hasta ].";return}
@@ -806,16 +818,22 @@ $("btnExport").onclick=async()=>{
     if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"Copia de recomendados"});return}}catch(e){if(e&&e.name==="AbortError")return}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=name;a.click();
 };
-$("btnRestore").onclick=()=>{$("fRestore").value="";$("fRestore").click()};
+$("btnRestore").onclick=()=>{$("form").hidden=true;$("importPanel").hidden=true;$("restorePanel").hidden=true;$("restorePanel").hidden=false;$("restoreMsg").textContent="";$("iRestore").value="";window.scrollTo({top:0,behavior:"smooth"})};
+$("btnRestoreCancel").onclick=()=>{$("restorePanel").hidden=true};
+$("btnRestoreFile").onclick=()=>{$("fRestore").value="";$("fRestore").click()};
+function restaurar(txt,cuando){
+  let data;try{data=JSON.parse(String(txt).trim())}catch(e){data=null}
+  if(!data||!Array.isArray(data.pax)||!Array.isArray(data.vuelos)){$("restoreMsg").textContent="Eso no es una copia de Recomendados. Tiene que ser el contenido completo del archivo, empezando por { y acabando por }.";return}
+  if(!confirm("Vas a sustituir todo lo que hay ahora en la app por la copia"+(cuando||"")+": "+data.pax.length+" personas y "+data.vuelos.length+" vuelos.\n\nLo que hayas apuntado después de esa copia se perderá. ¿Seguimos?"))return;
+  rows=data.pax.filter(p=>p&&p.id&&p.nombre);flights=data.vuelos.filter(v=>v&&v.vuelo&&v.fecha);
+  save();saveV();render();$("restorePanel").hidden=true;alert("Copia restaurada: "+rows.length+" personas y "+flights.length+" vuelos.");
+}
 $("fRestore").onchange=async()=>{
   const f=$("fRestore").files[0];if(!f)return;
-  let data;try{data=JSON.parse(await f.text())}catch(e){alert("Ese archivo no es una copia de Recomendados.");return}
-  if(!data||!Array.isArray(data.pax)||!Array.isArray(data.vuelos)){alert("Ese archivo no es una copia de Recomendados.");return}
-  const m=f.name.match(/(\d{4})-(\d{2})-(\d{2})/), cuando=m?(" del "+(+m[3])+"/"+(+m[2])+"/"+m[1]):"";
-  if(!confirm("Vas a sustituir todo lo que hay ahora en la app por la copia"+cuando+": "+data.pax.length+" personas y "+data.vuelos.length+" vuelos.\n\nLo que hayas apuntado después de esa copia se perderá. ¿Seguimos?"))return;
-  rows=data.pax.filter(p=>p&&p.id&&p.nombre);flights=data.vuelos.filter(v=>v&&v.vuelo&&v.fecha);
-  save();saveV();render();alert("Copia restaurada: "+rows.length+" personas y "+flights.length+" vuelos.");
+  const m=f.name.match(/(\d{4})-(\d{2})-(\d{2})/);
+  restaurar(await f.text(),m?(" del "+(+m[3])+"/"+(+m[2])+"/"+m[1]):"");
 };
+$("btnRestoreGo").onclick=()=>{const t=$("iRestore").value;if(!t.trim()){$("restoreMsg").textContent="Pega primero el contenido de la copia.";return}restaurar(t,"")};
 
 function parseCSV(t){
   const out=[];let row=[],f="",q=false;
@@ -882,7 +900,7 @@ let ffKey=null, ffAjeno=true;
 function setAjeno(v){ffAjeno=v;$("kMine").setAttribute("aria-pressed",!v);$("kOther").setAttribute("aria-pressed",v);$("cmteFields").style.display=v?"grid":"none"}
 $("kMine").onclick=()=>setAjeno(false);$("kOther").onclick=()=>setAjeno(true);
 function openFlightForm(fecha,vuelo){
-  $("form").hidden=true;$("importPanel").hidden=true;pendingDelete=null;
+  $("form").hidden=true;$("importPanel").hidden=true;$("restorePanel").hidden=true;pendingDelete=null;
   const fl=fecha?getFlight(fecha,vuelo):null;
   ffKey=fecha?fkey(fecha,vuelo):null;
   $("ffTitle").textContent=fecha?"Editar vuelo":"Nuevo vuelo";$("ffMsg").textContent="";
@@ -956,7 +974,7 @@ function applyTema(t){
 }
 try{applyTema(localStorage.getItem(KEYT)||"")}catch(e){applyTema("")}
 document.querySelectorAll(".tema").forEach(b=>b.onclick=()=>{applyTema(b.dataset.t);try{localStorage.setItem(KEYT,b.dataset.t)}catch(e){}setTimeout(()=>{$("temaPanel").hidden=true},250)});
-$("btnTema").onclick=()=>{const tp=$("temaPanel");tp.hidden=!tp.hidden;if(!tp.hidden){$("form").hidden=true;$("flightForm").hidden=true;$("importPanel").hidden=true;window.scrollTo({top:0,behavior:"smooth"})}};
+$("btnTema").onclick=()=>{const tp=$("temaPanel");tp.hidden=!tp.hidden;if(!tp.hidden){$("form").hidden=true;$("flightForm").hidden=true;$("importPanel").hidden=true;$("restorePanel").hidden=true;window.scrollTo({top:0,behavior:"smooth"})}};
 
 if(window.matchMedia)matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>applyTema(document.documentElement.dataset.tema||""));
 load(); loadV(); repair(); render();
