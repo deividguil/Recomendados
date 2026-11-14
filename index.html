@@ -315,6 +315,8 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <input type="file" id="iCsv" accept=".csv,text/csv,text/plain" hidden>
     <button type="button" class="link" id="btnImport">Importar lista</button>
     <button type="button" class="link" id="btnExport">Copia de seguridad</button>
+    <button type="button" class="link" id="btnRestore">Restaurar copia</button>
+    <input type="file" id="fRestore" accept=".json,application/json,text/plain" hidden>
   </footer>
 </div>
 
@@ -396,7 +398,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <p class="tip warn">Se pierde todo si borras el icono de la app (en iPhone), si pierdes o cambias de móvil o si borras los datos del navegador. Haz copia de vez en cuando y siempre antes de quitar el icono.</p>
       <ul>
         <li><b>Hacer copia</b>: <span class="kb">Copia de seguridad</span>, abajo del todo. Guárdala o mándatela.</li>
-        <li><b>Recuperar</b>: copia el contenido del archivo y pégalo en <span class="kb">Importar lista</span>.</li>
+        <li><b>Recuperar</b>: <span class="kb">Restaurar copia</span> y elige el archivo (desde Archivos, iCloud o donde lo guardaras). Sustituye todo lo que haya en la app por lo de la copia.</li>
       </ul>
     </div></details>
 
@@ -803,6 +805,16 @@ $("btnExport").onclick=async()=>{
   try{const f=new File([txt],name,{type:"application/json"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"Copia de recomendados"});return}}catch(e){if(e&&e.name==="AbortError")return}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=name;a.click();
+};
+$("btnRestore").onclick=()=>{$("fRestore").value="";$("fRestore").click()};
+$("fRestore").onchange=async()=>{
+  const f=$("fRestore").files[0];if(!f)return;
+  let data;try{data=JSON.parse(await f.text())}catch(e){alert("Ese archivo no es una copia de Recomendados.");return}
+  if(!data||!Array.isArray(data.pax)||!Array.isArray(data.vuelos)){alert("Ese archivo no es una copia de Recomendados.");return}
+  const m=f.name.match(/(\d{4})-(\d{2})-(\d{2})/), cuando=m?(" del "+(+m[3])+"/"+(+m[2])+"/"+m[1]):"";
+  if(!confirm("Vas a sustituir todo lo que hay ahora en la app por la copia"+cuando+": "+data.pax.length+" personas y "+data.vuelos.length+" vuelos.\n\nLo que hayas apuntado después de esa copia se perderá. ¿Seguimos?"))return;
+  rows=data.pax.filter(p=>p&&p.id&&p.nombre);flights=data.vuelos.filter(v=>v&&v.vuelo&&v.fecha);
+  save();saveV();render();alert("Copia restaurada: "+rows.length+" personas y "+flights.length+" vuelos.");
 };
 
 function parseCSV(t){
