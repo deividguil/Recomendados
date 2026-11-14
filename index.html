@@ -327,6 +327,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
     <input type="file" id="iCsv" accept=".csv,text/csv,text/plain" hidden>
     <button type="button" class="link" id="btnImport">Importar lista</button>
     <button type="button" class="link" id="btnExport">Copia de seguridad</button>
+    <button type="button" class="link" id="btnExportTxt">Copiar copia como texto</button>
     <button type="button" class="link" id="btnRestore">Restaurar copia</button>
     <input type="file" id="fRestore" accept=".json,application/json,text/plain" hidden>
   </footer>
@@ -410,6 +411,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
       <p class="tip warn">Se pierde todo si borras el icono de la app (en iPhone), si pierdes o cambias de móvil o si borras los datos del navegador. Haz copia de vez en cuando y siempre antes de quitar el icono.</p>
       <ul>
         <li><b>Hacer copia</b>: <span class="kb">Copia de seguridad</span>, abajo del todo. Guárdala o mándatela.</li>
+        <li><b>Como texto</b>: <span class="kb">Copiar copia como texto</span> la copia al portapapeles para pegarla en un mensaje o en Notas. Es lo mismo que el archivo, pero más fácil de mandar.</li>
         <li><b>Recuperar</b>: <span class="kb">Restaurar copia</span> y, o bien <b>Elegir archivo</b> (desde Archivos, iCloud o donde lo guardaras), o bien pega el contenido de la copia en el recuadro y <b>Restaurar lo pegado</b> (útil si te la han mandado por mensaje). Sustituye todo lo que haya en la app por lo de la copia.</li>
       </ul>
     </div></details>
@@ -817,6 +819,14 @@ $("btnExport").onclick=async()=>{
   try{const f=new File([txt],name,{type:"application/json"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:"Copia de recomendados"});return}}catch(e){if(e&&e.name==="AbortError")return}
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=name;a.click();
+};
+$("btnExportTxt").onclick=async()=>{
+  const txt=JSON.stringify({pax:rows,vuelos:flights});
+  const ok=()=>alert("Copia copiada: "+rows.length+" personas y "+flights.length+" vuelos.\n\nPégala en un mensaje o en Notas. Para recuperarla: Restaurar copia → pegar.");
+  try{await navigator.clipboard.writeText(txt);ok();return}catch(e){}
+  const t=document.createElement("textarea");t.value=txt;t.setAttribute("readonly","");t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();
+  let done=false;try{done=document.execCommand("copy")}catch(e){}t.remove();
+  done?ok():alert("No se ha podido copiar. Usa «Copia de seguridad» para guardar el archivo.");
 };
 $("btnRestore").onclick=()=>{$("form").hidden=true;$("importPanel").hidden=true;$("restorePanel").hidden=true;$("restorePanel").hidden=false;$("restoreMsg").textContent="";$("iRestore").value="";window.scrollTo({top:0,behavior:"smooth"})};
 $("btnRestoreCancel").onclick=()=>{$("restorePanel").hidden=true};
