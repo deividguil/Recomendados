@@ -17,7 +17,7 @@
 <style>
 :root{
   --bg:#eef0f3; --card:#ffffff; --ink:#14213a; --muted:#5d6779; --line:#d6dbe3;
-  --accent:#c8102e; --accent-soft:#fbe7ea; --on-accent:#ffffff; --alert:#c8102e; --alert-soft:#fbe7ea; --ok:#1f7a4d; --ok-soft:#e3f3ea; --amber:#9a5b00; --amber-soft:#fdf0d9; --tile:#ffffff; --tile-low:#eceef2; --tile-ink:#111418; --tile-line:#b9bfc9;
+  --accent:#c8102e; --accent-soft:#fbe7ea; --on-accent:#ffffff; --alert:#c8102e; --alert-soft:#fbe7ea; --ok:#1f7a4d; --ok-soft:#e3f3ea; --amber:#9a5b00; --amber-soft:#fdf0d9; --rec:#3451c7; --rec-soft:#e8ecfc; --tile:#ffffff; --tile-low:#eceef2; --tile-ink:#111418; --tile-line:#b9bfc9;
   --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -25,13 +25,13 @@
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#0e1420; --card:#172033; --ink:#e7ebf2; --muted:#9aa4b6; --line:#2a3550;
-  --accent:#ff5468; --accent-soft:#3a1c25; --on-accent:#ffffff; --alert:#ff5468; --alert-soft:#3a1c25; --ok:#5fd19a; --ok-soft:#173527; --amber:#f2b552; --amber-soft:#3a2c14; --tile:#2a354f; --tile-low:#222b41; --tile-ink:#f2f4f8; --tile-line:#0e1420; color-scheme:dark}}
+  --accent:#ff5468; --accent-soft:#3a1c25; --on-accent:#ffffff; --alert:#ff5468; --alert-soft:#3a1c25; --ok:#5fd19a; --ok-soft:#173527; --amber:#f2b552; --amber-soft:#3a2c14; --rec:#93a6ff; --rec-soft:#1f2650; --tile:#2a354f; --tile-low:#222b41; --tile-ink:#f2f4f8; --tile-line:#0e1420; color-scheme:dark}}
 
 /* Temas: cada uno redefine solo colores, en claro y en oscuro */
 :root[data-tema="enchufe"]{--bg:#edf3ee;--card:#ffffff;--ink:#12301f;--muted:#56705f;--line:#d2e0d5;--accent:#1c8f45;--accent-soft:#e0f3e6;--on-accent:#ffffff;--ok:#0f7c8a;--ok-soft:#ddf1f3;--tile-low:#e9f0eb}
 :root[data-tema="atardecer"]{--bg:#f6efea;--card:#fffaf6;--ink:#3a1d3a;--muted:#7a6070;--line:#e8d9d0;--accent:#d9561a;--accent-soft:#fde5d6;--on-accent:#ffffff;--tile-low:#f3ebe5}
 :root[data-tema="oceano"]{--bg:#e9f2f5;--card:#ffffff;--ink:#0d2c3a;--muted:#557482;--line:#cfe0e6;--accent:#0a7c9c;--accent-soft:#d9eef5;--on-accent:#ffffff;--tile-low:#e6eff2}
-:root[data-tema="noche"]{--bg:#0b0c12;--card:#151724;--ink:#eceef6;--muted:#9096ad;--line:#272a3c;--accent:#9d8cff;--accent-soft:#261f4d;--on-accent:#120a33;--alert:#ff5f6d;--alert-soft:#3a1a22;--ok:#5fd19a;--ok-soft:#163327;--amber:#f2b552;--amber-soft:#382a12;--tile:#22253a;--tile-low:#1c1f31;--tile-ink:#f2f3fa;--tile-line:#0b0c12;color-scheme:dark}
+:root[data-tema="noche"]{--bg:#0b0c12;--card:#151724;--ink:#eceef6;--muted:#9096ad;--line:#272a3c;--accent:#9d8cff;--accent-soft:#261f4d;--on-accent:#120a33;--alert:#ff5f6d;--alert-soft:#3a1a22;--ok:#5fd19a;--ok-soft:#163327;--amber:#f2b552;--amber-soft:#382a12;--rec:#7fb2ff;--rec-soft:#16264a;--tile:#22253a;--tile-low:#1c1f31;--tile-ink:#f2f3fa;--tile-line:#0b0c12;color-scheme:dark}
 @media (prefers-color-scheme:dark){
 :root[data-tema="enchufe"]{--bg:#0c1a12;--card:#142a1d;--ink:#e3f2e8;--muted:#93b3a0;--line:#244233;--accent:#55d681;--accent-soft:#173b25;--on-accent:#06210f;--ok:#4cc7d6;--ok-soft:#12343a;--tile:#1d3a28;--tile-low:#183121;--tile-line:#0c1a12}
 :root[data-tema="atardecer"]{--bg:#1c1020;--card:#2a1a2e;--ink:#f5e9f0;--muted:#b9a0b2;--line:#3f2a45;--accent:#ff8a4c;--accent-soft:#44241f;--on-accent:#2a1206;--tile:#3a2640;--tile-low:#311f36;--tile-line:#1c1020}
@@ -64,10 +64,15 @@ button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .summary{display:flex;gap:8px;flex-wrap:wrap}
 .summary span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:13px;color:var(--muted)}
 .summary b{font-family:var(--f-mono);color:var(--ink)}
-.psec{border-top:1px solid var(--line)}
 .psec h4{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:8px 16px;font-family:var(--f-display);font-size:16px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.psec.cu h4{background:var(--ok-soft);color:var(--ok)}
-.psec.tr h4{background:var(--amber-soft);color:var(--amber)}
+.psec.cu{--c:var(--ok);--c-soft:var(--ok-soft)}
+.psec.tr{--c:var(--amber);--c-soft:var(--amber-soft)}
+.psec,.recs{margin:12px 10px;border:1px solid color-mix(in srgb,var(--c) 30%,var(--card));border-left:7px solid var(--c);border-radius:12px;background:var(--c-soft);overflow:hidden}
+.psec h4{background:transparent;color:var(--c);font-size:19px;padding:10px 12px}
+.sico{width:22px;height:22px;flex:none;display:inline-grid;place-items:center;border-radius:6px;background:var(--c);color:var(--card)}
+.sico svg{width:15px;height:15px}
+.psec .pax{display:flex;flex-direction:column;gap:6px;padding:0 8px 8px}
+.psec .pax li,.psec .pax li:first-child{border:1px solid color-mix(in srgb,var(--c) 22%,var(--line));border-radius:10px}
 .psec h4 .sum{white-space:nowrap;font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:0;text-transform:none}
 .psec h4 button{white-space:nowrap;margin-left:auto;border:0;background:none;color:inherit;font:600 13px var(--f-body);text-decoration:underline;padding:0}
 .tabs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
@@ -162,8 +167,8 @@ textarea{resize:vertical;min-height:60px}
 .cd.soon .tile b{background:linear-gradient(to bottom,var(--alert) 0 49.5%,rgba(0,0,0,.1) 49.5% 51%,var(--alert) 51%);color:#fff;border-color:var(--alert)}
 .cd.soon .ps{color:var(--alert)}
 .cd.gone{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-top:2px}
-.recs{border-bottom:1px dashed var(--line);padding:10px 16px 12px;display:flex;flex-direction:column;gap:8px;background:var(--amber-soft)}
-.recs h3{margin:0;font-family:var(--f-display);font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber)}
+.recs{--c:var(--rec);--c-soft:var(--rec-soft);padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px}
+.recs h3{margin:0;display:flex;align-items:center;gap:10px;padding:0 2px;font-family:var(--f-display);font-weight:700;font-size:19px;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
 .reclist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
 .reclist li{display:grid;grid-template-columns:auto 1fr auto;gap:2px 8px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .reclist li.hecho textarea{text-decoration:line-through;color:var(--muted)}
@@ -176,8 +181,9 @@ textarea{resize:vertical;min-height:60px}
 .reclist .rchk[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
 .reclist .rdel{background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;padding:0}
 .reclist .rdel.arm{color:var(--alert)}
-.recs .addrec{align-self:flex-start;border:1px dashed var(--amber);background:transparent;color:var(--amber);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600}
-.link.recbtn{color:var(--amber);font-weight:600}
+.recs .addrec{align-self:flex-start;border:1px dashed var(--rec);background:var(--card);color:var(--rec);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600}
+.link.recbtn{color:var(--rec);font-weight:600}
+.recs .num{color:var(--rec)}
 .nopax{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:14px 16px;color:var(--muted);font-size:14px}
 .nopax .btn{padding:8px 12px;font-size:14px}
 #list{display:flex;flex-direction:column;gap:30px}
@@ -201,7 +207,7 @@ textarea{resize:vertical;min-height:60px}
 .name{font-weight:600;font-size:16px;overflow-wrap:anywhere}
 .from{font-size:13px;color:var(--muted)}
 .note{font-size:14px;margin-top:4px;overflow-wrap:anywhere}
-.row-actions{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+.row-actions{display:flex;gap:6px 12px;margin-top:6px;flex-wrap:wrap}
 .link{background:none;border:0;padding:0;color:var(--muted);font-size:12px;text-decoration:underline}
 .link.danger{color:var(--alert)}
 .chk{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:transparent;color:transparent;display:grid;place-items:center;font-size:18px;font-weight:700}
@@ -242,7 +248,8 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
 
   <div class="toolbar">
     <div class="seg" role="group" aria-label="Filtro">
-      <button type="button" id="fUp" aria-pressed="true">Próximos</button>
+      <button type="button" id="fNext" aria-pressed="true">Siguiente</button>
+      <button type="button" id="fUp" aria-pressed="false">Próximos</button>
       <button type="button" id="fAll" aria-pressed="false">Todos</button>
     </div>
     <span class="hint" id="hint">Arrastra desde ⋮⋮ para cambiar el orden</span>
@@ -354,7 +361,8 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
         <li>Cada vuelo es una tarjeta con su <b>cuenta atrás</b> (días, horas : minutos para salir). Con menos de 24 h se pone en rojo.</li>
         <li>La <b>fecha</b> es la local del aeropuerto de salida. Al lado, la hora local y la hora Z.</li>
         <li>Cada vuelo tiene dos listas: <span class="gr">A CUIDAR</span> y <span class="am">TRANSPORTINES</span>.</li>
-        <li><span class="kb">Próximos</span> muestra de hoy en adelante; <span class="kb">Todos</span> incluye los vuelos pasados.</li>
+        <li><span class="kb">Siguiente</span> enseña solo tu próximo vuelo; <span class="kb">Próximos</span>, todos de hoy en adelante; <span class="kb">Todos</span>, también los pasados. La app recuerda la opción elegida.</li>
+        <li>Dentro de cada vuelo, cada bloque tiene su color e icono: <b style="color:var(--ok)">♥ A cuidar</b> en verde, <b style="color:var(--amber)">Transportines</b> en ámbar y <b style="color:var(--rec)">Recados</b> en azul, al final.</li>
         <li>Si falta el trayecto, toca <span class="kb">+ trayecto</span> en la tarjeta.</li>
         <li>El botón de la <b>paleta</b>, arriba, cambia los colores de la app: Clásico, Enchufe, Atardecer, Noche (siempre oscuro) u Océano.</li>
       </ul>
@@ -435,7 +443,8 @@ const SEED=[];
 const KEYV="recomendados.vuelos.v1";
 let flights=[];
 const $=id=>document.getElementById(id);
-let rows=[], filter="up", tab="cuidar", kind="cuidar", editing=null, pendingDelete=null, sortables=[];
+const KEYF="recomendados.filtro";
+let rows=[], filter=(()=>{try{return localStorage.getItem(KEYF)||"next"}catch(e){return "next"}})(), tab="cuidar", kind="cuidar", editing=null, pendingDelete=null, sortables=[];
 
 function load(){try{const s=localStorage.getItem(KEY);rows=s?JSON.parse(s):SEED.slice();if(!s)save()}catch(e){rows=SEED.slice()}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(rows))}catch(e){}}
@@ -479,17 +488,17 @@ function render(){
   parkForms();
   const t=today(), list=$("list"); list.textContent="";
   const upcoming=rows.filter(r=>filter==="all"||(r.fecha||"")>=t);
-  $("nCuidar").textContent=upcoming.filter(r=>tipoOf(r)==="cuidar").reduce((a,r)=>a+(r.personas||1),0);
-  $("nTrans").textContent=upcoming.filter(r=>tipoOf(r)==="transportin").length;
   $("hint").hidden=false;
-  $("nTrans").textContent=upcoming.filter(r=>tipoOf(r)==="transportin").reduce((a,r)=>a+(r.personas||1),0);
-  const shown=upcoming;
-  const groups={};
-  shown.forEach(r=>{const k=r.fecha+"|"+fv(r.vuelo);(groups[k]=groups[k]||[]).push(r)});
+  let groups={};
+  upcoming.forEach(r=>{const k=r.fecha+"|"+fv(r.vuelo);(groups[k]=groups[k]||[]).push(r)});
   flights.filter(f=>filter==="all"||(f.fecha||"")>=t).forEach(f=>{if(!groups[f.id])groups[f.id]=[]});
+  if(filter==="next"){const nk=nextKey(Object.keys(groups));groups=nk?{[nk]:groups[nk]}:{}}
+  const vis=Object.values(groups).flat(), sumP=a=>a.reduce((x,r)=>x+(r.personas||1),0);
+  $("nCuidar").textContent=sumP(vis.filter(r=>tipoOf(r)==="cuidar"));
+  $("nTrans").textContent=sumP(vis.filter(r=>tipoOf(r)==="transportin"));
   if(!Object.keys(groups).length){
     const e=el("div","empty");e.append(el("strong",null,"Sin vuelos"));
-    e.append((rows.length||flights.length)&&filter==="up"?"No hay nada en vuelos próximos. Mira en «Todos» o añade uno nuevo.":"Importa tu programación (abajo del todo) o crea un vuelo con «+ Vuelo». Después añade los recomendados dentro de cada vuelo.");
+    e.append((rows.length||flights.length)&&filter!=="all"?"No hay vuelos próximos. Mira en «Todos» o añade uno nuevo.":"Importa tu programación (abajo del todo) o crea un vuelo con «+ Vuelo». Después añade los recomendados dentro de cada vuelo.");
     if(!rows.length&&!flights.length){e.append(el("br"));const hl=el("button","link","¿Primera vez? Abre la ayuda");hl.type="button";hl.onclick=openHelp;e.append(hl)}
     list.append(e);return;
   }
@@ -516,6 +525,11 @@ function placeForms(scroll){
     if(scroll)requestAnimationFrame(()=>f.scrollIntoView({behavior:"smooth",block:"nearest"}));
   });
 }
+const ICON={
+ cuidar:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.7-9.3C.8 8.3 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 6 3.8 4.5 7.2C19.5 16.4 12 21 12 21z"/></svg>',
+ transportin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v10h10"/><path d="M7 13l-2 8M17 13l2 8M5 17h14"/></svg>',
+ recados:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M5 8h14l-1.2 13H6.2L5 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg>'};
+function sico(t){const s=el("span","sico");s.innerHTML=ICON[t];return s}
 function renderFlight(k,g,list){
   const [fecha,vuelo]=k.split("|");
   const cu=g.filter(r=>tipoOf(r)==="cuidar").sort(byOrden), tr=g.filter(r=>tipoOf(r)==="transportin").sort(byOrden);
@@ -552,6 +566,7 @@ function renderFlight(k,g,list){
       a.append(wl,cl);c.append(a)}
     sec.append(c);
   }
+  let recBox=null;
   const bar=el("div","fbar");
   const ef=el("button","link","Editar vuelo");ef.type="button";ef.onclick=()=>openFlightForm(fecha,vuelo);bar.append(ef);
   if(!(fl&&fl.ajeno)){
@@ -561,7 +576,7 @@ function renderFlight(k,g,list){
     rb.onclick=()=>{if(open){recOpen.delete(key);if(recs.length)recHidden.add(key)}else{recHidden.delete(key);recOpen.add(key)}saveHidden();render()};
     bar.prepend(rb);bar.style.justifyContent="space-between";
     sec.append(bar);
-    if(open)sec.append(recadosEl(fecha,vuelo));
+    if(open)recBox=recadosEl(fecha,vuelo);
   } else sec.append(bar);
   if(!g.length){
     const np=el("div","nopax");np.append(el("span",null,"Sin recomendados todavía."));
@@ -570,10 +585,10 @@ function renderFlight(k,g,list){
       rm.onclick=()=>{if(pendingDelete===fl.id){pendingDelete=null;flights=flights.filter(x=>x.id!==fl.id);saveV();render()}else{pendingDelete=fl.id;render()}};bx.append(rm)}
     const a1=el("button","btn ghost","+ Cuidar");a1.type="button";a1.onclick=()=>openForm(null,{fecha,vuelo,tipo:"cuidar"});
     const a2=el("button","btn ghost","+ Transportín");a2.type="button";a2.onclick=()=>openForm(null,{fecha,vuelo,tipo:"transportin"});
-    bx.append(a1,a2);np.append(bx);sec.append(np);sec.append(el("div","fend","Fin "+vuelo));list.append(sec);return;
+    bx.append(a1,a2);np.append(bx);sec.append(np);if(recBox)sec.append(recBox);sec.append(el("div","fend","Fin "+vuelo));list.append(sec);return;
   }
   [["cuidar",cu],["transportin",tr]].forEach(([tipo,arr])=>{
-    const ps=el("div","psec "+(tipo==="cuidar"?"cu":"tr")), hd=el("h4",null,tipo==="cuidar"?"A cuidar":"Transportines");
+    const ps=el("div","psec "+(tipo==="cuidar"?"cu":"tr")), hd=el("h4");hd.append(sico(tipo),tipo==="cuidar"?"A cuidar":"Transportines");
     const done=arr.filter(r=>r.atendido).length;
     if(arr.length)hd.append(el("span","sum",tipo==="cuidar"?done+"/"+arr.length+" atendidos"+(sumP(arr)>arr.length?" · "+sumP(arr)+" pers.":""):sumP(arr)+" pers. · "+sumP(arr.filter(r=>r.atendido))+" a bordo"));
     else hd.append(el("span","sum","ninguno"));
@@ -592,7 +607,7 @@ function renderFlight(k,g,list){
         if(r.nota)w.append(el("div","note",r.nota));
         const ra=el("div","row-actions");
         const ed=el("button","link","Editar");ed.type="button";ed.onclick=()=>openForm(r);
-        const mv=el("button","link",tipo==="cuidar"?"Pasar a transportín":"Pasar a cuidar");mv.type="button";
+        const mv=el("button","link",tipo==="cuidar"?"→ Transportín":"→ Cuidar");mv.type="button";mv.setAttribute("aria-label",tipo==="cuidar"?"Pasar a transportín":"Pasar a cuidar");
         mv.onclick=()=>upd(r.id,tipo==="cuidar"?{tipo:"transportin",orden:nextOrden(r.fecha,r.vuelo,"transportin")}:{tipo:"cuidar",orden:nextOrden(r.fecha,r.vuelo,"cuidar")});
         const dl=el("button","link danger",pendingDelete===r.id?"¿Seguro? Toca para borrar":"Borrar");dl.type="button";
         dl.onclick=()=>{if(pendingDelete===r.id){pendingDelete=null;del(r.id)}else{pendingDelete=r.id;render()}};
@@ -609,6 +624,7 @@ function renderFlight(k,g,list){
     }
     sec.append(ps);
   });
+  if(recBox)sec.append(recBox);
   sec.append(el("div","fend","Fin "+vuelo));
   list.append(sec);
 }
@@ -673,7 +689,7 @@ let recHidden=new Set();try{recHidden=new Set(JSON.parse(localStorage.getItem(KE
 const saveHidden=()=>{try{localStorage.setItem(KEYH,JSON.stringify([...recHidden]))}catch(e){}};
 const recIsOpen=(key,n)=>recOpen.has(key)||(n>0&&!recHidden.has(key));
 function recadosEl(fecha,vuelo){
-  const box=el("div","recs");box.append(el("h3",null,"Recados"));
+  const box=el("div","recs"),h3=el("h3");h3.append(sico("recados"),"Recados");box.append(h3);
   const fl=getFlight(fecha,vuelo), recs=(fl&&fl.recados)||[];
   const ul=el("ol","reclist");
   recs.forEach((r,i)=>{
@@ -767,7 +783,7 @@ $("form").addEventListener("submit",e=>{
   }
   const savedId=editing||data.id;
   save(); $("form").hidden=true; editing=null; setTab(kind);
-  if(fecha<today()&&filter==="up")setFilter("all");
+  ensureVisible(fecha,vuelo);
   requestAnimationFrame(()=>{const c=document.querySelector('.flight[data-key="'+fkey(fecha,vuelo)+'"]');if(!c)return;
     const li=c.querySelector('li[data-id="'+savedId+'"]');(li||c).scrollIntoView({behavior:"smooth",block:"nearest"});
     c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),1700)});
@@ -944,13 +960,22 @@ $("flightForm").addEventListener("submit",e=>{
   }
   upsertFlight(fecha,vuelo,patch);
   $("flightForm").hidden=true;ffKey=null;
-  if(fecha<today())setFilter("all");else render();
+  render();ensureVisible(fecha,vuelo);
 });
 
 function setTab(){pendingDelete=null;render()}
 
-function setFilter(f){filter=f;$("fUp").setAttribute("aria-pressed",f==="up");$("fAll").setAttribute("aria-pressed",f==="all");render()}
-$("fUp").onclick=()=>setFilter("up");$("fAll").onclick=()=>setFilter("all");
+/* El siguiente vuelo: el tuyo más cercano que no haya salido hace más de 2 h; si no tienes, el más cercano de cualquiera */
+function nextKey(keys){
+  const now=Date.now(), c=keys.map(k=>{const [f,v]=k.split("|"),fl=getFlight(f,v);
+    const d=depTime(fl)||Date.parse(f+"T23:59:00");return {k,d,own:!(fl&&fl.ajeno)}}).filter(x=>x.d>now-2*3600000).sort((a,b)=>a.d-b.d);
+  return (c.find(x=>x.own)||c[0]||{}).k||null;
+}
+function setFilter(f){filter=f;try{localStorage.setItem(KEYF,f)}catch(e){}
+  $("fNext").setAttribute("aria-pressed",f==="next");$("fUp").setAttribute("aria-pressed",f==="up");$("fAll").setAttribute("aria-pressed",f==="all");render()}
+/* si lo que acabas de guardar no se ve con el filtro actual, amplía el filtro */
+function ensureVisible(fecha,vuelo){if(document.querySelector('.flight[data-key="'+fkey(fecha,vuelo)+'"]'))return;setFilter(fecha<today()?"all":"up")}
+$("fNext").onclick=()=>setFilter("next");$("fUp").onclick=()=>setFilter("up");$("fAll").onclick=()=>setFilter("all");
 
 function moveFlight(oldFecha,newFecha,vuelo){
   const f=getFlight(oldFecha,vuelo);if(f){f.fecha=newFecha;f.id=fkey(newFecha,vuelo)}
@@ -987,7 +1012,7 @@ document.querySelectorAll(".tema").forEach(b=>b.onclick=()=>{applyTema(b.dataset
 $("btnTema").onclick=()=>{const tp=$("temaPanel");tp.hidden=!tp.hidden;if(!tp.hidden){$("form").hidden=true;$("flightForm").hidden=true;$("importPanel").hidden=true;$("restorePanel").hidden=true;window.scrollTo({top:0,behavior:"smooth"})}};
 
 if(window.matchMedia)matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>applyTema(document.documentElement.dataset.tema||""));
-load(); loadV(); repair(); render();
+load(); loadV(); repair(); setFilter(filter);
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
