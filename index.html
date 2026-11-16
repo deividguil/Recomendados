@@ -335,7 +335,7 @@ footer{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding-top:8
   <footer>
     <button type="button" class="link" id="btnHelp2">Ayuda</button>
     <button type="button" class="link" id="btnCsv">Importar programación (CSV)</button>
-    <input type="file" id="iCsv" accept=".csv,text/csv,text/plain" hidden>
+    <input type="file" id="iCsv" hidden>
     <button type="button" class="link" id="btnImport">Importar lista</button>
     <button type="button" class="link" id="btnExport">Copia de seguridad</button>
     <button type="button" class="link" id="btnExportTxt">Copiar copia como texto</button>
@@ -828,8 +828,13 @@ function bindMic(b){
 $("btnImport").onclick=()=>{$("form").hidden=true;$("importPanel").hidden=false;$("restorePanel").hidden=true;$("importMsg").textContent="";$("iImport").value="";window.scrollTo({top:0,behavior:"smooth"})};
 $("btnImportCancel").onclick=()=>{$("importPanel").hidden=true};
 $("btnImportGo").onclick=()=>{
-  let data;try{data=JSON.parse($("iImport").value.trim())}catch(e){$("importMsg").textContent="No es un bloque válido. Copia el bloque entero, desde [ hasta ].";return}
-  if(data&&!Array.isArray(data)&&Array.isArray(data.vuelos)){data.vuelos.forEach(f=>{if(f&&f.vuelo&&f.fecha){const{id,...rest}=f;upsertFlight(f.fecha,f.vuelo,{...rest,vuelo:fv(f.vuelo)})}})}
+  const raw=$("iImport").value.trim();
+  let data;try{data=JSON.parse(raw)}catch(e){
+    const res=/IB\s*\d+\s+[A-Z]{3}\d{4}\s*-\s*[A-Z]{3}\d{4}/i.test(raw)?importSchedule(raw.includes("Asunto")?raw:"Asunto,Fecha de comienzo\n"+raw):null;
+    if(res&&res.nuevos+res.act){$("importMsg").textContent="Programación importada: "+res.nuevos+" vuelos nuevos"+(res.act?", "+res.act+" actualizados":"")+".";render();return}
+    $("importMsg").textContent="No es un bloque válido. Copia el bloque entero, desde el primer corchete o llave hasta el último.";return}
+  let nv=0;
+  if(data&&!Array.isArray(data)&&Array.isArray(data.vuelos)){data.vuelos.forEach(f=>{if(f&&f.vuelo&&f.fecha){const{id,...rest}=f;upsertFlight(f.fecha,f.vuelo,{...rest,vuelo:fv(f.vuelo)});nv++}})}
   if(data&&!Array.isArray(data)&&Array.isArray(data.pax))data=data.pax;
   if(!Array.isArray(data))data=[data];
   let n=0;
@@ -841,7 +846,7 @@ $("btnImportGo").onclick=()=>{
     if(ex){Object.assign(ex,rec2);if(p.orden!=null)ex.orden=p.orden;if(p.atendido!=null)ex.atendido=!!p.atendido}
     else{rec2.orden=p.orden??nextOrden(rec2.fecha,rec2.vuelo,rec2.tipo);rows.push({id:p.id||uid(),...rec2,atendido:!!p.atendido,creado:Date.now()+n})}
     n++});
-  save();$("importMsg").textContent=n?("Importadas "+n+" personas."):"No había nadie con nombre en el bloque.";render();
+  save();$("importMsg").textContent=(nv?"Importados "+nv+" vuelos. ":"")+(n?"Importadas "+n+" personas.":nv?"":"No había nadie con nombre en el bloque.");render();
 };
 $("btnExport").onclick=async()=>{
   const txt=JSON.stringify({pax:rows,vuelos:flights},null,1), name="recomendados-"+today()+".json";
